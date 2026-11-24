@@ -1,0 +1,36 @@
+COMMIT=b578aea8047aaeacb61ee96eec29372ad96b9f9b
+TIMESTAMP=2026-11-24T18:38:04Z
+=== 1. LAKE BUILD ===
+⚠ [9047/9056] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9056] Replayed LogarithmicRigidity.LogarithmicRigidity
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:28:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:36:8: declaration uses `sorry`
+⚠ [9049/9056] Replayed LogarithmicRigidity.JacobianSyzygies
+warning: LogarithmicRigidity/JacobianSyzygies.lean:23:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:33:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:39:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:46:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:58:8: declaration uses `sorry`
+⚠ [9050/9056] Replayed LogarithmicRigidity.CounterexampleCert
+warning: LogarithmicRigidity/CounterexampleCert.lean:20:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CounterexampleCert.lean:34:8: declaration uses `sorry`
+⚠ [9051/9056] Built LogarithmicRigidity.Preliminaries (4.7s)
+warning: LogarithmicRigidity/Preliminaries.lean:76:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [9052/9056] Built LogarithmicRigidity.CaseRNonZero (3.2s)
+warning: LogarithmicRigidity/CaseRNonZero.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CaseRNonZero.lean:26:8: declaration uses `sorry`
+✔ [9053/9056] Built LogarithmicRigidity.SanityChecks (3.6s)
+⚠ [9054/9056] Built LogarithmicRigidity.RealLogarithmic (3.8s)
+warning: LogarithmicRigidity/RealLogarithmic.lean:22:8: declaration uses `sorry`
+warning: LogarithmicRigidity/RealLogarithmic.lean:31:8: declaration uses `sorry`
+✔ [9055/9056] Built LogarithmicRigidity (2.8s)
+Build completed successfully (9056 jobs).
+LAKE_BUILD_EXIT=0
