@@ -100,7 +100,8 @@ private lemma hBound_add_le_rNonZeroBound {m a b : ℕ} (hm : 1 ≤ m) (ha : 1 �
         omega
 
 /-- **Theorem 1.4(1)**: Sharpened upper bounds on algebraic limit cycles for `r ≢ 0` in every
-degree `m ≥ 1`. -/\ntheorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (sys : RNonZeroSystemData m) :
+degree `m ≥ 1`. -/
+theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (sys : RNonZeroSystemData m) :
     sys.numLimitCycles ≤ rNonZeroBound m := by
   have htot : sys.curve.totalDeg =
       sys.curve.realAffineDegs.sum + 2 * sys.curve.nonRealPairDegs.sum := by
