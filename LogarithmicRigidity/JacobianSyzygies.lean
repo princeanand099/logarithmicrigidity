@@ -64,7 +64,7 @@ theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :
         rw [hxm] at hdx
         linear_combination hdx
       rcases mul_eq_zero.mp hfac with hx0 | hlin
-      · left; exact pow_eq_zero hx0
+      · left; by_contra h; exact pow_ne_zero (m - 1) h hx0
       · right; linear_combination hlin
     have hy_cases : y = 0 ∨ 2 * ((m + 1 : ℕ) : ℂ) * y = (m : ℂ) := by
       have hym : y ^ m = y ^ (m - 1) * y := by rw [← pow_succ, hm_sub]
@@ -73,7 +73,7 @@ theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :
         rw [hym] at hdy
         linear_combination hdy
       rcases mul_eq_zero.mp hfac with hy0 | hlin
-      · left; exact pow_eq_zero hy0
+      · left; by_contra h; exact pow_ne_zero (m - 1) h hy0
       · right; linear_combination hlin
     rcases hx_cases with rfl | hx_eq <;> rcases hy_cases with rfl | hy_eq
     · rcases hxy with hx | hy
@@ -95,7 +95,7 @@ theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :
           _ = -(y ^ m) := by ring
       rw [hfm, mul_zero] at hval
       have : y ^ m = 0 := neg_eq_zero.mp hval.symm
-      exact hy_ne (pow_eq_zero this)
+      exact pow_ne_zero m hy_ne this
     · intro hfm
       have hx_ne : x ≠ 0 := by
         intro hx0
@@ -111,7 +111,7 @@ theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :
           _ = x ^ m * (((m : ℂ) + 1) + -(m : ℂ)) := by rw [hx_eq, hcast]
           _ = x ^ m := by ring
       rw [hfm, mul_zero] at hval
-      exact hx_ne (pow_eq_zero hval.symm)
+      exact pow_ne_zero m hx_ne hval.symm
     · intro hfm
       have hy_ne : y ≠ 0 := by
         intro hy0
@@ -194,7 +194,7 @@ theorem lemma_5_3_foliation_Fm_cofactor_origin {m : ℕ} (hm : 2 ≤ m) :
         push_cast; ring
       rw [Complex.add_re, h1, Complex.ofReal_re, h2, Complex.mul_re, Complex.ofReal_re,
         Complex.ofReal_im, zero_mul, sub_zero]
-    rw [hre]
+    rw [hre, neg_div]
     have hm_pos : (0 : ℝ) < (m : ℝ) := Nat.cast_pos.mpr (by omega)
     have hm1_pos : (0 : ℝ) < ((m + 1 : ℕ) : ℝ) := Nat.cast_pos.mpr (by omega)
     have hden_pos : (0 : ℝ) < 2 * (m : ℝ) * ((m + 1 : ℕ) : ℝ) := by positivity
@@ -224,12 +224,12 @@ theorem prop_5_4_and_theorem_1_3_part2 {m : ℕ} (hm : 2 ≤ m) :
       exact h2
     have hω_lt_one : ‖ω‖ < 1 := by
       by_contra hge
-      push_neg at hge
+      push Not at hge
       have h1 : (1 : ℝ) ≤ ‖ω‖ ^ (m + 1) := one_le_pow₀ hge
       linarith
     have hω_gt_half : (1 : ℝ) / 2 < ‖ω‖ := by
       by_contra hle
-      push_neg at hle
+      push Not at hle
       have h1 : ‖ω‖ ^ (m + 1) ≤ ((1 : ℝ) / 2) ^ (m + 1) :=
         pow_le_pow_left₀ (norm_nonneg ω) hle (m + 1)
       have h2 : ((1 : ℝ) / 2) ^ (m + 1) ≤ ((1 : ℝ) / 2) ^ 3 :=
@@ -278,7 +278,7 @@ theorem prop_5_4_and_theorem_1_3_part2 {m : ℕ} (hm : 2 ≤ m) :
       rw [Cardinal.mk_Ioo_real hε] at hle
       exact not_le_of_gt Cardinal.aleph0_lt_continuum hle
     by_contra hno
-    push_neg at hno
+    push Not at hno
     have hsub : Set.Ioo (0 : ℝ) ε ⊆ E := fun x hx => hno x hx
     exact hunc (hE.mono hsub)
 
