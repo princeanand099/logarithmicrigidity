@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this Lean 4 formalization, please cite it as below."
+title: "Logarithmic Rigidity and Algebraic Limit Cycles of Non-Dicritical Foliations (Lean 4 Formalization)"
+authors:
+  - family-names: "Anand"
+    given-names: "Prince"
+date-released: 2026-11-24
+license: Apache-2.0
+repository-code: "https://github.com/princeanand099/logarithmicrigidity"

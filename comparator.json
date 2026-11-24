@@ -1,7 +1,24 @@
 {
   "challenge_module": "Challenge",
   "solution_module": "Solution",
-  "theorem_names": [],
+  "theorem_names": [
+    "LogarithmicRigidity.lemma_2_1_tau_ratio_criterion",
+    "LogarithmicRigidity.lemma_2_4_hBound_mono_superadd",
+    "LogarithmicRigidity.lemma_3_1_blowup_propagation",
+    "LogarithmicRigidity.prop_3_2_logarithmic_residues",
+    "LogarithmicRigidity.theorem_1_1_logarithmic_rigidity",
+    "LogarithmicRigidity.prop_4_1_real_logarithmic_obstruction",
+    "LogarithmicRigidity.theorem_1_2_standard_bound_sharp",
+    "LogarithmicRigidity.prop_5_1_jacobian_syzygy",
+    "LogarithmicRigidity.theorem_1_3_part1_smooth_nonexistence",
+    "LogarithmicRigidity.lemma_5_2_curve_Cm_geometry",
+    "LogarithmicRigidity.lemma_5_3_foliation_Fm_cofactor_origin",
+    "LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2",
+    "LogarithmicRigidity.theorem_1_4_part1_r_nonzero_bounds",
+    "LogarithmicRigidity.lemma_6_1_quartic_geometry",
+    "LogarithmicRigidity.prop_6_2_counterexample_nondicritical",
+    "LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2"
+  ],
   "definition_names": [],
   "permitted_axioms": [
     "propext",
