@@ -47,7 +47,6 @@ theorem lemma_2_1_tau_ratio_criterion (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ ≠ 0)
       simp only [Complex.add_im, Complex.inv_im, h2im, add_zero] at him
       simp only [Complex.add_re, Complex.inv_re, h2re] at hre
       have him_mul := congr_arg (· * Complex.normSq ρ) him
-      dsimp only at him_mul
       rw [add_mul, zero_mul, div_mul_cancel₀ _ hns_ne] at him_mul
       have him' : ρ.im * (Complex.normSq ρ - 1) = 0 := by
         calc ρ.im * (Complex.normSq ρ - 1)
