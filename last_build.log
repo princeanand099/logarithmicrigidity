@@ -1,0 +1,31 @@
+COMMIT=4f6071f32a767dfdd5245287cdb03b6aced42d0f
+TIMESTAMP=2026-11-24T18:35:18Z
+=== 1. LAKE BUILD ===
+⚠ [9047/9056] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9056] Replayed LogarithmicRigidity.Preliminaries
+warning: LogarithmicRigidity/Preliminaries.lean:20:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:25:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:34:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:41:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:45:8: declaration uses `sorry`
+⚠ [9049/9056] Replayed LogarithmicRigidity.LogarithmicRigidity
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:28:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:36:8: declaration uses `sorry`
+⚠ [9050/9056] Replayed LogarithmicRigidity.JacobianSyzygies
+warning: LogarithmicRigidity/JacobianSyzygies.lean:23:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:33:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:39:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:46:8: declaration uses `sorry`
+warning: LogarithmicRigidity/JacobianSyzygies.lean:58:8: declaration uses `sorry`
+⚠ [9051/9056] Replayed LogarithmicRigidity.CaseRNonZero
+warning: LogarithmicRigidity/CaseRNonZero.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CaseRNonZero.lean:26:8: declaration uses `sorry`
+⚠ [9052/9056] Replayed LogarithmicRigidity.CounterexampleCert
+warning: LogarithmicRigidity/CounterexampleCert.lean:20:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CounterexampleCert.lean:34:8: declaration uses `sorry`
+✔ [9054/9056] Built LogarithmicRigidity.RealLogarithmic (3.0s)
+✔ [9055/9056] Built LogarithmicRigidity (3.6s)
+Build completed successfully (9056 jobs).
+LAKE_BUILD_EXIT=0
