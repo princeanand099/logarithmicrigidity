@@ -1,0 +1,28 @@
+COMMIT=06af770a0ac5255235664e33874e279cbbe74819
+TIMESTAMP=2026-11-24T18:37:55Z
+=== 1. LAKE BUILD ===
+⚠ [9047/9056] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9056] Replayed LogarithmicRigidity.Preliminaries
+warning: LogarithmicRigidity/Preliminaries.lean:20:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:25:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:34:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:41:8: declaration uses `sorry`
+warning: LogarithmicRigidity/Preliminaries.lean:45:8: declaration uses `sorry`
+⚠ [9049/9056] Replayed LogarithmicRigidity.LogarithmicRigidity
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:28:8: declaration uses `sorry`
+warning: LogarithmicRigidity/LogarithmicRigidity.lean:36:8: declaration uses `sorry`
+⚠ [9050/9056] Replayed LogarithmicRigidity.RealLogarithmic
+warning: LogarithmicRigidity/RealLogarithmic.lean:22:8: declaration uses `sorry`
+warning: LogarithmicRigidity/RealLogarithmic.lean:31:8: declaration uses `sorry`
+⚠ [9051/9056] Replayed LogarithmicRigidity.CaseRNonZero
+warning: LogarithmicRigidity/CaseRNonZero.lean:21:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CaseRNonZero.lean:26:8: declaration uses `sorry`
+⚠ [9052/9056] Replayed LogarithmicRigidity.CounterexampleCert
+warning: LogarithmicRigidity/CounterexampleCert.lean:20:8: declaration uses `sorry`
+warning: LogarithmicRigidity/CounterexampleCert.lean:34:8: declaration uses `sorry`
+✔ [9054/9056] Built LogarithmicRigidity.JacobianSyzygies (5.5s)
+✔ [9055/9056] Built LogarithmicRigidity (3.6s)
+Build completed successfully (9056 jobs).
+LAKE_BUILD_EXIT=0
