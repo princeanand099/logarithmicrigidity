@@ -40,8 +40,8 @@ lemma blowup_step_increment_nonneg (step : BlowUpStepData) :
 lemma cumulativeOrder_succ_ge {N : ℕ} (res : LogResolutionData N)
     (k : ℕ) (hk : k + 1 < N + 1) :
     cumulativeOrder res ⟨k, Nat.lt_of_succ_lt hk⟩ ≤ cumulativeOrder res ⟨k + 1, hk⟩ := by
-  dsimp [cumulativeOrder]
-  omega
+  rw [cumulativeOrder]
+  exact Nat.le_add_right _ _
 
 /-- **Lemma 3.1**: Inductive blow-up propagation preserves non-negativity of the holomorphic
 factor exponent along every stage of an embedded log-resolution. -/
@@ -51,7 +51,7 @@ theorem lemma_3_1_blowup_propagation {N : ℕ} (res : LogResolutionData N)
   rcases j with ⟨n, hn⟩
   induction n with
   | zero =>
-    simp [cumulativeOrder]
+    rw [cumulativeOrder]
   | succ k ih =>
     exact le_trans (ih (Nat.lt_of_succ_lt hn)) (cumulativeOrder_succ_ge res k hn)
 
@@ -88,6 +88,7 @@ theorem theorem_1_1_logarithmic_rigidity {m : ℕ} (hm : 1 ≤ m)
       simp only [Finset.mem_univ, Finset.mem_singleton, true_iff]
       ext
       have := i.isLt
+      dsimp [i0]
       omega
     have hsum := data.residues.residue_sum_zero
     rw [huniv, Finset.sum_singleton] at hsum
@@ -107,7 +108,7 @@ theorem theorem_1_1_logarithmic_rigidity {m : ℕ} (hm : 1 ≤ m)
       have hi := i.isLt
       by_cases h0 : i.val = 0
       · left; exact Fin.ext h0
-      · right; exact Fin.ext (by omega)
+      · right; exact Fin.ext (by dsimp [i1]; omega)
     have hsum := data.residues.residue_sum_zero
     rw [huniv, Finset.sum_pair hi_ne] at hsum
     exact data.no_two_component_first_integral hk (S.degF i1) (S.degF i0)
