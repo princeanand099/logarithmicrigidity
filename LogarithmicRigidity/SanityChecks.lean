@@ -51,7 +51,7 @@ example : ∃ sys : StandardSystemData 1, sys.numLimitCycles = Hnodal 1 := by
     zero_if_radial := by intro h; omega
     carnicer_deg := by intro _; simp [RealCurveSplit.totalDeg]
     line_inf_if_full := by intro _; rfl
-    harnack_bound := by simp [hBound, aVal]
+    harnack_bound := by decide
     log_obstruction := by intro _ _ h; omega
   }, rfl⟩
 
@@ -69,7 +69,7 @@ example : ∃ sys : RNonZeroSystemData 3, sys.numLimitCycles = 2 ∧ Hnodal 3 < 
     numLimitCycles := 2
     no_line_inf := rfl
     carnicer_deg := by simp [RealCurveSplit.totalDeg]
-    harnack_bound := by simp [hBound, aVal]
+    harnack_bound := by decide
     log_obstruction := by intro h _; simp [RealCurveSplit.totalDeg] at h
     irred_m_plus_one_bound := by intro _ _; decide
   }, rfl, by decide⟩
