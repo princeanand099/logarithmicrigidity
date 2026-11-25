@@ -34,7 +34,7 @@ private lemma euler_monomial (m : Fin 3 →₀ ℕ) (c : ℂ) :
         · subst hj
           simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]
           omega
-        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+        · simp [Finsupp.single_eq_of_ne hj]
       rw [hadd]
       have hnat : ((m i : ℕ) : MvPolynomial (Fin 3) ℂ) = MvPolynomial.C ((m i : ℕ) : ℂ) := by
         simp
@@ -54,8 +54,7 @@ theorem prop_5_1_euler_homogeneous (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   rw [euler_monomial]
   have hdeg : ∑ i : Fin 3, m i = d := by
-    have hmem : MvPolynomial.coeff m F ≠ 0 := MvPolynomial.mem_support_iff.mp hm
-    have hw := hF hmem
+    have hw := hF (MvPolynomial.mem_support_iff.mp hm)
     simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw
   rw [hdeg]
 

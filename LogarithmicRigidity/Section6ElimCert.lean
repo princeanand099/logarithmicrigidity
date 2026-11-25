@@ -184,7 +184,6 @@ theorem floquet_integral_pos_oval2 (T : ℝ) (hT : 0 < T) (x y : ℝ → ℝ)
         (hxt.const_mul 879)).sub
         ((hyt.pow 2).const_mul 510)).sub
         (hyt.const_mul 142)) using 1
-    simp only [Pi.pow_apply]
     ring
   have hint_diff : IntervalIntegrable
       (fun t ↦ H2Scaled (x t) (y t) - 3200 * cofactorK (x t) (y t)) MeasureTheory.volume 0 T := by

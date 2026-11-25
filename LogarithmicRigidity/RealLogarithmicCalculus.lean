@@ -27,6 +27,7 @@ private lemma hasDerivAt_abs_rpow {g : ℝ → ℝ} {g' α t : ℝ}
     have hpos' : 0 < -g t := neg_pos.mpr hneg
     have hder : HasDerivAt (fun s ↦ (-g s) ^ α) (α * (-g t) ^ (α - 1) * (-g')) t := by
       convert (hg.neg.rpow_const (p := α) (Or.inl (ne_of_gt hpos'))) using 1
+      simp only [Pi.neg_apply]
       ring
     have hder' := hder.congr_of_eventuallyEq hev
     convert hder' using 1
@@ -78,7 +79,9 @@ theorem prop_4_1_local_first_integral_const {ι : Type*} [DecidableEq ι] (s : F
         HasDerivAt (fun x ↦ ∏ i ∈ s, |f i x| ^ (lam i / lam₁))
           (∑ i ∈ s, (∏ j ∈ s.erase i, |f j t| ^ (lam j / lam₁)) *
             ((lam i / lam₁) * |f i t| ^ (lam i / lam₁) * (f' i t / f i t))) t := by
-      simpa only [Finset.prod_apply, smul_eq_mul] using hprod_raw
+      convert hprod_raw using 1
+      · ext x; simp only [Finset.prod_apply]
+      · simp only [smul_eq_mul]
     have hmul := (hf₁ t).mul hprod
     convert hmul using 1
     have hP_ne : (∏ j ∈ s, f j t) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun j hj ↦ hne j hj t
@@ -110,7 +113,6 @@ theorem prop_4_1_local_first_integral_const {ι : Type*} [DecidableEq ι] (s : F
         have hfi : f i t ≠ 0 := hne i hi t
         rw [hsplit]
         field_simp [hlam₁, hfi]
-        ring
       rw [hlog t] at hscaled
       exact (mul_eq_zero.mp hscaled).resolve_left (mul_ne_zero hlam₁ hP_ne)
     calc
