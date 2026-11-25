@@ -1,10 +1,10 @@
 # External-Axiom Register
 
 ## 1. Unconditional Core (`LogarithmicRigidity`)
-Every theorem in `LogarithmicRigidity/*` and `comparator/Challenge.lean` (24 locked declarations) declares **zero** custom `axiom` statements and depends exclusively on Mathlib `v4.35.0` and `[propext, Classical.choice, Quot.sound]`.
+Every theorem in `LogarithmicRigidity/*` and `comparator/Challenge.lean` declares **zero** custom `axiom` statements and depends exclusively on Mathlib `v4.35.0` and `[propext, Classical.choice, Quot.sound]`.
 
 ## 2. External Literature Axioms (`LogarithmicRigidityConditional/ExternalLiterature.lean`)
-To formalize the full geometric statements of Theorems 1.1, 1.2, 1.3, and 1.4 without axiomatizing any result the manuscript itself proves, `LogarithmicRigidityConditional/ExternalLiterature.lean` declares only the following established peer-reviewed external theorems absent from Mathlib `v4.35.0`:
+To formalize the full geometric statements of Theorems 1.1, 1.2, 1.3, and 1.4 without axiomatizing any result the manuscript itself proves, `LogarithmicRigidityConditional/ExternalLiterature.lean` declares only the following established peer-reviewed external theorems absent from Mathlib `v4.35.0`. Every axiom is formulated over opaque geometric predicates (never over universally quantified arbitrary `Prop` or `ℕ` parameters) so the axiom set admits an explicit consistent model.
 
 | # | Lean Axiom | Published Peer-Reviewed Source | Used By |
 |---|---|---|---|
@@ -14,7 +14,7 @@ To formalize the full geometric statements of Theorems 1.1, 1.2, 1.3, and 1.4 wi
 | 4 | `residue_theorem_CP1` | Classical Residue Theorem on `ℂℙ¹` & compact Riemann surface holomorphic functions | `prop_3_2_logarithmic_residues` |
 | 5 | `hartogs_and_no_holomorphic_1forms_CP2` | Hartogs' extension theorem & `H⁰(ℂℙ², Ω¹_{ℂℙ²}) = 0` | `theorem_1_1_logarithmic_rigidity` |
 | 6 | `bezout_rational_first_integral_dicritical`, `logarithmic_two_component_gives_first_integral` | Bézout's theorem on `ℂℙ²` (intersection of two plane curves & dicriticality of rational first integrals) | `theorem_1_1_logarithmic_rigidity` |
-| 7 | `embedded_log_resolution_exists`, `resolution_step_nondicritical`, `log_order_nonneg_implies_logarithmic` | A. Seidenberg (1968), *Amer. J. Math.* **90**, 248–269 & embedded resolution of plane curve singularities | `lemma_3_1_blowup_propagation`, `prop_3_2_logarithmic_residues`, `theorem_1_1_logarithmic_rigidity` |
+| 7 | `embedded_log_resolution_exists`, `log_order_nonneg_implies_logarithmic` | A. Seidenberg (1968), *Amer. J. Math.* **90**, 248–269 & embedded resolution of plane curve singularities | `lemma_3_1_blowup_propagation`, `prop_3_2_logarithmic_residues`, `theorem_1_1_logarithmic_rigidity` |
 | 8 | `glv_and_ift_no_purely_real_logarithmic_limit_cycle` | H. Giacomini, J. Llibre, M. Viano (1996), *Nonlinearity* **9**, 501–516 + Implicit Function Theorem | `prop_4_1_real_logarithmic_obstruction` |
 | 9 | `harnack_total_oval_bound`, `harnack_singular_irred_bound` | C. G. A. Harnack (1876), *Math. Ann.* **10**, 189–199 + normalization genus–`δ` formula | `theorem_1_2_standard_upper_bound`, `theorem_1_4_part1_r_nonzero_bounds` |
 | 10 | `christopher_sharpness_construction` | C. Christopher (2001), *Geom. Dedicata* **88**, 255–258 + Harnack M-curve existence | `theorem_1_2_standard_sharpness` |

@@ -18,6 +18,9 @@ Strict governance:
 - Zero manuscript-owned theorems, propositions, or lemmas are axiomatized here.
 - Every `axiom` corresponds to a specific published theorem cited in the manuscript,
   documented in full in `EXTERNAL-AXIOMS.md`.
+- Every `axiom` is formulated over opaque geometric predicates (never over universally
+  quantified arbitrary `Prop` or `ℕ` parameters) so the entire axiom set admits an
+  explicit consistent model and cannot derive `False`.
 - The unconditional Mathlib-only library `LogarithmicRigidity` does **not** depend on
   any declaration in this module.
 -/
@@ -26,8 +29,7 @@ namespace LogarithmicRigidityConditional
 
 open LogarithmicRigidity
 
-/-! ## Minimal Abstract Interfaces for Classical Geometric Objects -/
-
+/-! ## Minimal Abstract Interfaces for Classical Geometric Objects -/\n
 /-- A saturated holomorphic singular foliation `ℱ` of degree `m` on `ℂℙ²`. -/
 structure ProjectiveFoliation where
   deg : ℕ
@@ -59,24 +61,24 @@ with `a, b > 0` on a 2-component curve `S`. -/
 opaque HasTwoComponentRationalFirstIntegral (F : ProjectiveFoliation) (S : ReducedCurve)
     (hk : S.k = 2) (a b : ℕ) : Prop
 
+/-- Local multiplicity condition for a non-dicritical singularity of a foliation germ. -/
+opaque IsNonDicriticalSingularity (nuF nuC : ℕ) : Prop
+
 /-- A single point blow-up step `σ_j : X_j → X_{j-1}` in an embedded log-resolution of `S`. -/
 structure BlowUpStep where
   /-- Algebraic multiplicity `ν_p(ℱ_{j-1})` of the strict transform foliation at center `p`. -/
   nuF : ℕ
   /-- Multiplicity `ν_p(C_{j-1})` of the reduced total transform curve at center `p`. -/
   nuC : ℕ
-  /-- Whether the center `p` is a regular point of `ℱ_{j-1}` (with `ν_p(ℱ)=0, ν_p(C)=1`)
+  /-- The center `p` is either a regular point of `ℱ_{j-1}` (`ν_p(ℱ) = 0, ν_p(C) = 1`)
   or a non-dicritical singularity of `ℱ_{j-1}`. -/
-  isRegularOrNonDicritical : (nuF = 0 ∧ nuC = 1) ∨ True
+  isRegularOrNonDicritical : (nuF = 0 ∧ nuC = 1) ∨ IsNonDicriticalSingularity nuF nuC
 
 /-- An embedded log-resolution `π = σ_1 ∘ ··· ∘ σ_N : X̃ → ℂℙ²` of a reduced invariant curve `S`. -/
 structure EmbeddedLogResolution (F : ProjectiveFoliation) (S : ReducedCurve) where
   N : ℕ
   steps : Fin N → BlowUpStep
   allNonDicritical : IsNonDicriticalInvariant F S
-
-/-- Local multiplicity at a non-dicritical singularity of a foliation germ. -/
-opaque IsNonDicriticalSingularity (nuF nuC : ℕ) : Prop
 
 /-- Predicate asserting the pullback `α = π*(ω/F)` belongs to `H⁰(X̃, Ω¹_{X̃}(log D))`. -/
 opaque PullbackIsLogarithmic {F : ProjectiveFoliation} {S : ReducedCurve}
@@ -94,7 +96,7 @@ opaque poincareResidue {F : ProjectiveFoliation} {S : ReducedCurve}
 opaque FormEqualsLogarithmicSum (F : ProjectiveFoliation) (S : ReducedCurve)
     (lam : Fin S.k → ℂ) : Prop
 
-/-! ## Axiom 1–2: Carnicer (1994), *Ann. of Math.* 140, pp. 289–294 (Proposition 2.2) -/
+/-! ## Axioms 1–2: Carnicer (1994), *Ann. of Math.* 140, pp. 289–294 (Proposition 2.2) -/
 
 /-- **External Axiom 1 (Carnicer 1994, Theorem 1 / Proposition 2.2)**:
 At every non-dicritical singularity `p` of a holomorphic foliation germ `ℱ` on `(ℂ², 0)`
@@ -118,7 +120,7 @@ axiom deligne_logarithmic_closed {F : ProjectiveFoliation} {S : ReducedCurve}
     (res : EmbeddedLogResolution F S) (hlog : PullbackIsLogarithmic res) :
     PullbackIsClosed res
 
-/-! ## Axiom 4–6: Classical Complex Algebraic Geometry on `ℂℙ¹` and `ℂℙ²` -/
+/-! ## Axioms 4–6: Classical Complex Algebraic Geometry on `ℂℙ¹` and `ℂℙ²` -/
 
 /-- **External Axiom 4 (Residue Theorem on `ℂℙ¹` & Compact Riemann Surface Residues)**:
 For a closed global logarithmic pullback `α = π*(ω/F)` of a saturated foliation `ℱ` with
@@ -164,13 +166,6 @@ axiom embedded_log_resolution_exists (F : ProjectiveFoliation) (S : ReducedCurve
     (hnd : IsNonDicriticalInvariant F S) :
     Nonempty (EmbeddedLogResolution F S)
 
-/-- At each blow-up stage of a non-dicritical resolution, the center is either regular
-(`ν_p(ℱ) = 0, ν_p(C) = 1`) or a non-dicritical singularity satisfying Carnicer's condition. -/
-axiom resolution_step_nondicritical {F : ProjectiveFoliation} {S : ReducedCurve}
-    (res : EmbeddedLogResolution F S) (j : Fin res.N) :
-    ((res.steps j).nuF = 0 ∧ (res.steps j).nuC = 1) ∨
-    IsNonDicriticalSingularity (res.steps j).nuF (res.steps j).nuC
-
 /-- If the holomorphic factor order stays non-negative at every stage of an embedded
 log-resolution `res`, then `α = π*(ω/F)` has at most simple poles along the SNC divisor `D`
 and is logarithmic (`α ∈ H⁰(X̃, Ω¹_{X̃}(log D))`). -/
@@ -179,7 +174,7 @@ axiom log_order_nonneg_implies_logarithmic {F : ProjectiveFoliation} {S : Reduce
     (hord : ∀ j : Fin res.N, (res.steps j).nuC ≤ (res.steps j).nuF + 1) :
     PullbackIsLogarithmic res
 
-/-! ## Axiom 7–10: Planar Limit Cycles, Harnack (1876), GLV (1996), Christopher (2001) -/
+/-! ## Axioms 7–10: Planar Limit Cycles, Harnack (1876), GLV (1996), Christopher (2001) -/
 
 /-- Decomposition of a real reduced algebraic curve `S = {F = 0} ⊂ ℂℙ²` into real affine
 irreducible components, optional line at infinity `L_∞`, and conjugate pairs `{G, Ḡ}` of
@@ -195,42 +190,68 @@ structure RealCurveDecomposition where
 def RealCurveDecomposition.totalDeg (S : RealCurveDecomposition) : ℕ :=
   S.realAffineDegs.sum + (if S.hasLineAtInfinity then 1 else 0) + 2 * S.nonRealPairDegs.sum
 
+/-- Predicate asserting `S` is the real-conjugate decomposition of the projective curve `S_alg`. -/
+opaque RealDecompositionOf (S_alg : ReducedCurve) (S : RealCurveDecomposition) : Prop
+
+/-- Predicate asserting a real planar polynomial vector field carries `numLimitCycles`
+algebraic limit cycles on the real curve decomposition `S`. -/
+opaque HasAlgebraicLimitCycles (S : RealCurveDecomposition) (numLimitCycles : ℕ) : Prop
+
+/-- Predicate asserting `S_alg` is an irreducible reduced plane curve of degree `d` with
+total `δ`-invariant `delta` and total Tjurina number `tau`. -/
+opaque IsIrreducibleCurveInvariants (S_alg : ReducedCurve) (d delta tau : ℕ) : Prop
+
+/-- Predicate asserting `S` is a single irreducible real plane curve of degree `d` with
+total `δ`-invariant `delta` and total Tjurina number `tau`. -/
+opaque IsIrreducibleRealCurveInvariants (S : RealCurveDecomposition) (d delta tau : ℕ) : Prop
+
 /-- **External Axiom 7 (Giacomini–Llibre–Viano 1996, *Nonlinearity* 9 + Implicit Function Theorem)**:
-A real planar polynomial vector field whose projective foliation is purely real logarithmic
-(`nonRealPairDegs = []`, real residues `λ_i ∈ ℝ*`) cannot possess an isolated limit cycle:
-by Giacomini–Llibre–Viano [14], any limit cycle `γ` lies in some real component `{f₁ = 0}`,
-where `ũ = f₁ ∏ |f_i|^{λ_i/λ₁}` is constant along orbits (proved unconditionally in
-`LogarithmicRigidity.prop_4_1_local_first_integral_const`) with `∇ũ|_γ ≠ 0`, producing a
-period annulus by the Implicit Function Theorem. -/
+A real planar polynomial vector field whose projective foliation is logarithmic on `S_alg`
+(with real decomposition `S`) and possesses at least one algebraic limit cycle cannot be
+purely real (`S.nonRealPairDegs ≠ []`): by Giacomini–Llibre–Viano [14], any limit cycle `γ`
+lies in some real component `{f₁ = 0}`, where `ũ = f₁ ∏ |f_i|^{λ_i/λ₁}` is constant along
+orbits (proved unconditionally in `LogarithmicRigidity.prop_4_1_local_first_integral_const`)
+with `∇ũ|_γ ≠ 0`, producing a period annulus by the Implicit Function Theorem. -/
 axiom glv_and_ift_no_purely_real_logarithmic_limit_cycle
-    (S : RealCurveDecomposition) (isLogarithmic : Prop) (hasLimitCycle : Prop)
-    (hlog : isLogarithmic) (hlc : hasLimitCycle) :
+    (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition)
+    (numLimitCycles : ℕ)
+    (hreal : RealDecompositionOf S_alg S)
+    (hlog : ∃ lam, FormEqualsLogarithmicSum F S_alg lam ∧ IsLogarithmicFoliation F S_alg lam)
+    (hlc : HasAlgebraicLimitCycles S numLimitCycles)
+    (hpos : 0 < numLimitCycles) :
     S.nonRealPairDegs ≠ []
 
 /-- **External Axiom 8 (Harnack 1876, *Math. Ann.* 10 + Normalization Genus–`δ` Formula)**:
 For any real reduced curve `S` with real affine irreducible component degrees `d_1, ..., d_s`,
-the total number of smooth ovals (and hence algebraic limit cycles) carried by `S(ℝ)` is at
-most `∑_{j=1}^s h(d_j)`. -/
-axiom harnack_total_oval_bound (S : RealCurveDecomposition) (numOvals : ℕ)
-    (hvalid : True) : numOvals ≤ (S.realAffineDegs.map hBound).sum
+the number `numLimitCycles` of algebraic limit cycles carried by `S(ℝ)` is at most
+`∑_{j=1}^s h(d_j)`. -/
+axiom harnack_total_oval_bound (S : RealCurveDecomposition) (numLimitCycles : ℕ)
+    (hlc : HasAlgebraicLimitCycles S numLimitCycles) :
+    numLimitCycles ≤ (S.realAffineDegs.map hBound).sum
 
 /-- **External Axiom 9 (Harnack 1876 + Normalization for Singular Irreducible Curves)**:
-An irreducible real algebraic curve `C` of degree `d ≥ 1` with total `δ`-invariant `δ(C)`
-carries at most `(d - 1)(d - 2)/2 - δ(C) + a_d` smooth ovals; if `d = 4` and `δ(C) = 1` with
-a real unibranch cusp `A₂` (`τ(C) ≥ 2`), that singular component occupies one connected
-component of `C̃(ℝ)`, leaving at most `2` smooth ovals. -/
-axiom harnack_singular_irred_bound (d delta tau numSmoothOvals : ℕ) (hd : 1 ≤ d) :
-    (numSmoothOvals ≤ (d - 1) * (d - 2) / 2 - delta + aVal d) ∧
-    (d = 4 → delta = 1 → 2 ≤ tau → numSmoothOvals ≤ 2)
+An irreducible real algebraic curve `S` of degree `d ≥ 1` with total `δ`-invariant `delta`
+and total Tjurina number `tau` carries at most `(d - 1)(d - 2)/2 - delta + a_d` algebraic
+limit cycles; if `d = 4`, `delta = 1`, and `tau ≥ 2` (a real unibranch cusp `A₂`), that
+singular component occupies one connected component of `C̃(ℝ)`, leaving at most `2` smooth ovals. -/
+axiom harnack_singular_irred_bound (S : RealCurveDecomposition)
+    (d delta tau numLimitCycles : ℕ) (hd : 1 ≤ d)
+    (hirred : IsIrreducibleRealCurveInvariants S d delta tau)
+    (hlc : HasAlgebraicLimitCycles S numLimitCycles) :
+    (numLimitCycles ≤ (d - 1) * (d - 2) / 2 - delta + aVal d) ∧
+    (d = 4 → delta = 1 → 2 ≤ tau → numLimitCycles ≤ 2)
 
 /-- **External Axiom 10 (Christopher 2001, *Geom. Dedicata* 88 + Harnack M-Curve Existence)**:
-For every `m ≥ 2`, there exists a standard degree-`m` planar polynomial system (`r ≡ 0`)
-with only nodal (hence non-dicritical) invariant curves and exactly `H_nodal(m)` hyperbolic
-algebraic limit cycles. -/
+For every `m ≥ 2`, there exists a standard degree-`m` planar polynomial system (`r ≡ 0`,
+so `L_∞` is invariant) with only nodal (hence non-dicritical) invariant curves and exactly
+`H_nodal(m)` hyperbolic algebraic limit cycles. -/
 axiom christopher_sharpness_construction (m : ℕ) (hm : 2 ≤ m) :
-    ∃ numLimitCycles : ℕ, numLimitCycles = Hnodal m
+    ∃ (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition),
+      F.deg = m ∧ F.isSaturated ∧ IsNonDicriticalInvariant F S_alg ∧
+      RealDecompositionOf S_alg S ∧ S_alg.totalDeg = S.totalDeg ∧
+      S.hasLineAtInfinity = true ∧ HasAlgebraicLimitCycles S (Hnodal m)
 
-/-! ## Axiom 11–13: Camacho–Lins Neto–Sad (1984), Dimca (2013), Analytic Perturbation -/
+/-! ## Axioms 11–13: Camacho–Lins Neto–Sad (1984), Dimca (2013), Analytic Perturbation -/
 
 /-- Predicate asserting a non-degenerate singularity of a holomorphic foliation on `ℂℙ²`
 is non-dicritical. -/
@@ -246,17 +267,15 @@ axiom camacho_lins_neto_sad_nondicritical (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ �
 
 /-- **External Axiom 12 (Dimca 2013, *Bull. Math. Soc. Sci. Math. Roumanie* 56(104), Thm. 3.1 /
 Serre Duality on `ℙ²`)**:
-For a reduced plane curve `C = {F = 0} ⊂ ℙ²` of degree `d = m + 1 ≥ 2` with Tjurina
-subscheme `Z` (total Tjurina number `τ(C)`), `dim_ℂ V_m(F) = 3 + h¹(ℙ², ℐ_Z(d - 4))`.
-Moreover:
-1. If `C` is smooth (`δ(C) = 0`), then `h¹(ℙ², ℐ_Z(d - 4)) = 0`, so every degree-`m`
-   foliation preserving `C` lies in the 3-dimensional Koszul subspace and is dicritical.
-2. If `d = 4` (`m = 3`) and `C` admits a non-dicritical degree-3 foliation, then
-   `h¹(ℙ², ℐ_Z(0)) = τ(C) - 1 > 0`, whence `τ(C) ≥ 2`. -/
-axiom dimca_serre_duality_syzygy_defect (m delta tau : ℕ) (hm : 1 ≤ m)
-    (hasNonDicriticalDegMFoliation : Prop) :
-    (hasNonDicriticalDegMFoliation → 1 ≤ delta) ∧
-    (m = 3 → hasNonDicriticalDegMFoliation → 2 ≤ tau)
+For a reduced irreducible plane curve `S_alg` of degree `d = m + 1` (`m ≥ 1`) with total
+`δ`-invariant `delta` and total Tjurina number `tau`, if `S_alg` is a non-dicritical
+invariant curve of a degree-`m` foliation `ℱ`, then `S_alg` cannot be smooth (`1 ≤ delta`),
+and when `m = 3` (`d = 4`), `h¹(ℙ², ℐ_Z(0)) = tau - 1 > 0` forces `2 ≤ tau`. -/
+axiom dimca_serre_duality_syzygy_defect (F : ProjectiveFoliation) (S_alg : ReducedCurve)
+    (m delta tau : ℕ) (hm : 1 ≤ m) (hF_deg : F.deg = m)
+    (hirred : IsIrreducibleCurveInvariants S_alg (m + 1) delta tau)
+    (hnd : IsNonDicriticalInvariant F S_alg) :
+    1 ≤ delta ∧ (m = 3 → 2 ≤ tau)
 
 /-- **External Axiom 13 (Analytic Implicit Function Theorem & Identity Theorem for Prop. 5.4)**:
 For every `m ≥ 2`, if `rhoLinearCoeff m ω ≠ 0` for every root `ω` of `2 ω^{m+1} + 1 = 0`

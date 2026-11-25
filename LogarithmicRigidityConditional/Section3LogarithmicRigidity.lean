@@ -39,7 +39,7 @@ theorem lemma_3_1_blowup_propagation {F : ProjectiveFoliation} {S : ReducedCurve
       cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩) := by
   have hstep : ∀ j : Fin res.N, (res.steps j).nuC ≤ (res.steps j).nuF + 1 := by
     intro j
-    rcases resolution_step_nondicritical res j with ⟨hF0, hC1⟩ | hnd
+    rcases (res.steps j).isRegularOrNonDicritical with ⟨hF0, hC1⟩ | hnd
     · omega
     · exact carnicer_local_inequality _ _ hnd
   refine ⟨hstep, ?_⟩
@@ -80,7 +80,6 @@ theorem theorem_1_1_logarithmic_rigidity (F : ProjectiveFoliation) (S : ReducedC
   have hform : FormEqualsLogarithmicSum F S (poincareResidue res) :=
     hartogs_and_no_holomorphic_1forms_CP2 res hsum
   refine ⟨⟨poincareResidue res, hform, hlam_ne, hsum⟩, ?_⟩
-  -- Prove k ≥ 3 by ruling out k = 0, k = 1, and k = 2
   by_contra hlt
   push Not at hlt
   have hk_cases : S.k = 0 ∨ S.k = 1 ∨ S.k = 2 := by omega

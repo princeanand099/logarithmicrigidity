@@ -11,6 +11,7 @@ import LogarithmicRigidity.CaseRNonZero
 import LogarithmicRigidity.CounterexampleCert
 import LogarithmicRigidity.Section6ElimCert
 import LogarithmicRigidity.Section6RealSingFree
+import LogarithmicRigidity.Section6Q4Cert
 import LogarithmicRigidity.SanityChecks
 import LogarithmicRigidityConditional
 

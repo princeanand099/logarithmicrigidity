@@ -39,12 +39,13 @@ theorem lemma_2_1_nondicritical_criterion (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ �
 admits a smooth (`δ = 0`) irreducible non-dicritical invariant algebraic curve of degree `m + 1`.
 In particular, for `m = 1`, every irreducible conic (`d = 2`) is smooth (`δ = 0`), so no
 degree-1 foliation admits a non-dicritical irreducible invariant conic. -/
-theorem theorem_1_3_part1_smooth_nonexistence (m delta tau : ℕ) (hm : 1 ≤ m)
-    (hasNonDicriticalDegMFoliation : Prop)
+theorem theorem_1_3_part1_smooth_nonexistence (F : ProjectiveFoliation) (S_alg : ReducedCurve)
+    (m delta tau : ℕ) (hm : 1 ≤ m) (hF_deg : F.deg = m)
+    (hirred : IsIrreducibleCurveInvariants S_alg (m + 1) delta tau)
     (hsmooth : delta = 0) :
-    ¬ hasNonDicriticalDegMFoliation := by
-  intro h
-  have hge := (dimca_serre_duality_syzygy_defect m delta tau hm hasNonDicriticalDegMFoliation).1 h
+    ¬ IsNonDicriticalInvariant F S_alg := by
+  intro hnd
+  have hge := (dimca_serre_duality_syzygy_defect F S_alg m delta tau hm hF_deg hirred hnd).1
   omega
 
 /-- **Theorem 1.3(2) (Full)**: For every `m ≥ 2`, there exists `λ ∈ (0, 2(m + 1))` avoiding the
