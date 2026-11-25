@@ -37,7 +37,7 @@ private lemma isHomogeneous_pderiv (F : MvPolynomial (Fin 3) ℂ) (d : ℕ) (hd 
     (MvPolynomial.pderiv i F).IsHomogeneous (d - 1) := by
   intro m hm
   rw [MvPolynomial.coeff_pderiv] at hm
-  have hne : MvPolynomial.coeff (m + Finsupp.single i 1) F ≠ 0 := by
+  have hne : F.coeff (m + Finsupp.single i 1) ≠ 0 := by
     intro h0
     rw [h0, zero_mul] at hm
     exact hm rfl
@@ -51,12 +51,12 @@ private lemma isHomogeneous_pderiv (F : MvPolynomial (Fin 3) ℂ) (d : ℕ) (hd 
 
 private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : ℕ)
     (hA : A.IsHomogeneous k) (m : Fin 3 →₀ ℕ) (hm : ∑ j : Fin 3, m j = k) :
-    MvPolynomial.coeff m (u * A) = MvPolynomial.coeff 0 u * MvPolynomial.coeff m A := by
+    (u * A).coeff m = u.coeff 0 * A.coeff m := by
   rw [MvPolynomial.coeff_mul]
   refine Finset.sum_eq_single (0, m) ?_ ?_
   · rintro ⟨p, q⟩ hpq hne
     rw [Finset.mem_antidiagonal] at hpq
-    by_cases hq : MvPolynomial.coeff q A = 0
+    by_cases hq : A.coeff q = 0
     · simp [hq]
     · exfalso
       have hqdeg : ∑ j : Fin 3, q j = k := by
@@ -84,23 +84,22 @@ private lemma eq_const_mul_add_const_mul_of_isHomogeneous
     (P A B u v : MvPolynomial (Fin 3) ℂ) (k : ℕ)
     (hP : P.IsHomogeneous k) (hA : A.IsHomogeneous k) (hB : B.IsHomogeneous k)
     (heq : P = u * A + v * B) :
-    P = MvPolynomial.C (MvPolynomial.coeff 0 u) * A +
-        MvPolynomial.C (MvPolynomial.coeff 0 v) * B := by
+    P = MvPolynomial.C (u.coeff 0) * A + MvPolynomial.C (v.coeff 0) * B := by
   ext m
   by_cases hm : ∑ j : Fin 3, m j = k
   · rw [heq]
     simp only [MvPolynomial.coeff_add, MvPolynomial.coeff_C_mul]
     rw [coeff_mul_of_isHomogeneous u A k hA m hm,
         coeff_mul_of_isHomogeneous v B k hB m hm]
-  · have hP0 : MvPolynomial.coeff m P = 0 := by
+  · have hP0 : P.coeff m = 0 := by
       by_contra hne
       have hw := hP hne
       exact hm (by simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw)
-    have hA0 : MvPolynomial.coeff m A = 0 := by
+    have hA0 : A.coeff m = 0 := by
       by_contra hne
       have hw := hA hne
       exact hm (by simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw)
-    have hB0 : MvPolynomial.coeff m B = 0 := by
+    have hB0 : B.coeff m = 0 := by
       by_contra hne
       have hw := hB hne
       exact hm (by simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw)
@@ -204,9 +203,9 @@ theorem prop_5_1_koszul_pencil_forms (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
   have heul := euler_expanded F d hF
   dsimp only [IsJacobianSyzygy, formOfSyzygy]
   refine ⟨by ring, Prod.ext ?_ (Prod.ext ?_ ?_)⟩
-  · linear_combination MvPolynomial.C c₀ * heul
-  · linear_combination MvPolynomial.C c₁ * heul
-  · linear_combination MvPolynomial.C c₂ * heul
+  · linear_combination -MvPolynomial.C c₀ * heul
+  · linear_combination -MvPolynomial.C c₁ * heul
+  · linear_combination -MvPolynomial.C c₂ * heul
 
 /-- **Theorem 1.3(1) (Algebraic Koszul Rigidity)**: For any homogeneous `F ∈ ℂ[X, Y, Z]` of
 degree `d ≥ 2` whose Jacobian partial derivatives `(F_X, F_Y, F_Z)` form a regular sequence
@@ -263,35 +262,22 @@ theorem theorem_1_3_part1_koszul_rigidity (F : MvPolynomial (Fin 3) ℂ) (d : �
     hP₂ ha_hom hc_hom hP2_eq
   have hP3_c := eq_const_mul_add_const_mul_of_isHomogeneous P₃ a b u v (d - 1)
     hP₃ ha_hom hb_hom hP3_eq
-  refine ⟨MvPolynomial.coeff 0 v, -(MvPolynomial.coeff 0 u), MvPolynomial.coeff 0 w, ?_, ?_, ?_, ?_⟩
-  · have hu : MvPolynomial.coeff 0 (-u) = -(MvPolynomial.coeff 0 u) := by simp
-    have hw : MvPolynomial.coeff 0 (-w) = -(MvPolynomial.coeff 0 w) := by simp
+  have h1' : P₁ = MvPolynomial.C (-(u.coeff 0)) * c - MvPolynomial.C (w.coeff 0) * b := by
+    have hu : (-u).coeff 0 = -(u.coeff 0) := by simp
+    have hw : (-w).coeff 0 = -(w.coeff 0) := by simp
     rw [hu, hw, map_neg] at hP1_c
     linear_combination hP1_c
-  · have hv : MvPolynomial.coeff 0 (-v) = -(MvPolynomial.coeff 0 v) := by simp
+  have h2' : P₂ = MvPolynomial.C (w.coeff 0) * a - MvPolynomial.C (v.coeff 0) * c := by
+    have hv : (-v).coeff 0 = -(v.coeff 0) := by simp
     rw [hv, map_neg] at hP2_c
     linear_combination hP2_c
-  · rw [map_neg]
+  have h3' : P₃ = MvPolynomial.C (v.coeff 0) * b - MvPolynomial.C (-(u.coeff 0)) * a := by
+    rw [map_neg]
     linear_combination hP3_c
-  · have hkos := (prop_5_1_koszul_pencil_forms F d hF
-      (MvPolynomial.coeff 0 v) (-(MvPolynomial.coeff 0 u)) (MvPolynomial.coeff 0 w)).2
-    have h1' : P₁ = MvPolynomial.C (-(MvPolynomial.coeff 0 u)) * c -
-        MvPolynomial.C (MvPolynomial.coeff 0 w) * b := by
-      have hu : MvPolynomial.coeff 0 (-u) = -(MvPolynomial.coeff 0 u) := by simp
-      have hw : MvPolynomial.coeff 0 (-w) = -(MvPolynomial.coeff 0 w) := by simp
-      rw [hu, hw, map_neg] at hP1_c
-      linear_combination hP1_c
-    have h2' : P₂ = MvPolynomial.C (MvPolynomial.coeff 0 w) * a -
-        MvPolynomial.C (MvPolynomial.coeff 0 v) * c := by
-      have hv : MvPolynomial.coeff 0 (-v) = -(MvPolynomial.coeff 0 v) := by simp
-      rw [hv, map_neg] at hP2_c
-      linear_combination hP2_c
-    have h3' : P₃ = MvPolynomial.C (MvPolynomial.coeff 0 v) * b -
-        MvPolynomial.C (-(MvPolynomial.coeff 0 u)) * a := by
-      rw [map_neg]
-      linear_combination hP3_c
-    rw [h1', h2', h3']
-    exact hkos
+  refine ⟨v.coeff 0, -(u.coeff 0), w.coeff 0, h1', h2', h3', ?_⟩
+  have hkos := (prop_5_1_koszul_pencil_forms F d hF (v.coeff 0) (-(u.coeff 0)) (w.coeff 0)).2
+  rw [h1', h2', h3']
+  exact hkos
 
 /-- **Lemma 5.2 (`L_∞` Smoothness)**: Along `L_∞ = {Z = 0}`, the leading form
 `X^{m+1} + 2 Y^{m+1}` has no repeated nonzero roots. -/
@@ -301,11 +287,12 @@ theorem lemma_5_2_Linf_smooth {m : ℕ} (hm : 2 ≤ m) (X Y : ℂ)
     X = 0 ∧ Y = 0 := by
   have hm1 : ((m + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   have hXm : X ^ m = 0 := (mul_eq_zero.mp hdx).resolve_left hm1
-  have hX : X = 0 := pow_eq_zero hXm
+  have hX : X = 0 := by by_contra h; exact pow_ne_zero m h hXm
   subst hX
   rw [zero_pow (by omega), zero_add] at h0
   have hYpow : Y ^ (m + 1) = 0 := (mul_eq_zero.mp h0).resolve_left (by norm_num)
-  exact ⟨rfl, pow_eq_zero hYpow⟩
+  have hY : Y = 0 := by by_contra h; exact pow_ne_zero (m + 1) h hYpow
+  exact ⟨rfl, hY⟩
 
 /-- **Lemma 5.3 (`L_∞` Disjointness)**: `Sing(ℱ_m(λ)) ∩ C_m ∩ L_∞ = ∅` for all `m ≥ 2` and
 `λ ≠ 0`. -/
@@ -317,14 +304,15 @@ theorem lemma_5_3_Linf_disjoint {m : ℕ} (hm : 2 ≤ m) (lam X Y : ℂ)
   rcases mul_eq_zero.mp h0 with h1 | hY
   · rcases mul_eq_zero.mp h1 with hlam0 | hXpow
     · exact hlam hlam0
-    · have hX : X = 0 := pow_eq_zero hXpow
+    · have hX : X = 0 := by by_contra h; exact pow_ne_zero (m - 1) h hXpow
       subst hX
       rw [zero_pow (by omega), zero_add] at hC
-      have hY : Y = 0 := pow_eq_zero ((mul_eq_zero.mp hC).resolve_left (by norm_num))
+      have hYpow : Y ^ (m + 1) = 0 := (mul_eq_zero.mp hC).resolve_left (by norm_num)
+      have hY : Y = 0 := by by_contra h; exact pow_ne_zero (m + 1) h hYpow
       exact hXY.elim (· rfl) (· hY)
   · subst hY
     rw [zero_pow (by omega), mul_zero, add_zero] at hC
-    have hX : X = 0 := pow_eq_zero hC
+    have hX : X = 0 := by by_contra h; exact pow_ne_zero (m + 1) h hC
     exact hXY.elim (· hX) (· rfl)
 
 /-- **Proposition 5.4 (Parametrization Factorization)**: Along the rational parametrization
