@@ -46,14 +46,16 @@ theorem lemma_3_1_blowup_propagation {F : ProjectiveFoliation} {S : ReducedCurve
     · exact carnicer_local_inequality _ _ hnd
   have hmono : ∀ j : Fin res.N,
       cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩ := by
-    intro j
-    have hj := hstep j
-    simp only [cumulativeOrder]
+    intro ⟨k, hk⟩
+    have hj : (res.steps ⟨k, hk⟩).nuC ≤ (res.steps ⟨k, hk⟩).nuF + 1 := hstep ⟨k, hk⟩
+    change cumulativeOrder res ⟨k, by omega⟩ ≤
+      cumulativeOrder res ⟨k, by omega⟩ +
+        (((res.steps ⟨k, hk⟩).nuF : ℤ) + 1 - ((res.steps ⟨k, hk⟩).nuC : ℤ))
     omega
   have hnonneg : ∀ j : Fin (res.N + 1), 0 ≤ cumulativeOrder res j := by
     intro ⟨k, hk⟩
     induction k with
-    | zero => simp [cumulativeOrder]
+    | zero => exact le_rfl
     | succ k ih =>
       have hk_prev : k < res.N + 1 := by omega
       have h0 := ih hk_prev
