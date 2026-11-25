@@ -29,7 +29,8 @@ namespace LogarithmicRigidityConditional
 
 open LogarithmicRigidity
 
-/-! ## Minimal Abstract Interfaces for Classical Geometric Objects -/\n
+/-! ## Minimal Abstract Interfaces for Classical Geometric Objects -/
+
 /-- A saturated holomorphic singular foliation `ℱ` of degree `m` on `ℂℙ²`. -/
 structure ProjectiveFoliation where
   deg : ℕ

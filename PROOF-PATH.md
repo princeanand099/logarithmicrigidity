@@ -24,6 +24,7 @@
 | Prop. 6.2 (`L_∞`, elimination, `x=0`) | §6 | `LogarithmicRigidity/Section6ElimCert.lean` | `sing_Linf_empty`, `sing_PQ_elim`, `sing_PQ_x_zero` | Standard 3 only |
 | Prop. 6.2 (cofactor & positivity) | §6, App. A | `LogarithmicRigidity/CounterexampleCert.lean` | `prop_6_2_counterexample_nondicritical` | Standard 3 only |
 | Prop. 6.2 (no real singularities on `f=0`) | §6, App. A | `LogarithmicRigidity/Section6RealSingFree.lean` | `prop_6_2_no_real_singularity_on_quartic` | Standard 3 only |
+| Prop. 6.2 (`q₄` stratum non-dicriticality) | §6, App. A | `LogarithmicRigidity/Section6Q4Cert.lean` | `prop_6_2_q4_stratum_nondicritical` | Standard 3 only |
 | Prop. 6.3 & Thm. 1.4(2) (SOS & FTC Floquet) | §1, §6, App. A | `LogarithmicRigidity/CounterexampleCert.lean`, `Section6ElimCert.lean` | `prop_6_3_and_theorem_1_4_part2`, `floquet_integral_pos_oval1`, `floquet_integral_pos_oval2` | Standard 3 only |
 
 ## Part 2: Full Manuscript Theorems (`LogarithmicRigidityConditional`, External Literature Axioms)
