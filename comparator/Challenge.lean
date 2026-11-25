@@ -198,7 +198,7 @@ theorem prop_5_4_and_theorem_1_3_part2 {m : ℕ} (hm : 2 ≤ m) :
 theorem lemma_6_1_quartic_geometry :
     (∀ X Y : ℝ, (X ≠ 0 ∨ Y ≠ 0) → 0 < quarticF4 X Y) ∧
     (∀ x y : ℂ, quarticF x y = 0 ∧ quarticFx x y = 0 ∧ quarticFy x y = 0 ↔
-      (x = 0 ∧ y = Complex.I) ∨ (x = 0 ∧ y = -Complex.I)) ∧
+      x = 0 ∧ (y = Complex.I ∨ y = -Complex.I)) ∧
     (∀ y : ℝ, 0 < quarticF 0 y) ∧
     (quarticF (-1) 0 = -3 ∧ quarticF 1 0 = -3) ∧
     (∃ ystar : ℝ, 0 < ystar ∧ ystar < 1 ∧ quarticF 1 ystar = 0) := by

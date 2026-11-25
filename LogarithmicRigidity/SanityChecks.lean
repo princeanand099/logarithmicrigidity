@@ -48,6 +48,6 @@ example : jacDet (0 : ℂ) 0 ≠ 0 ∧ IsNonDicriticalTau (tauRatio (jacTr 0 0) 
 /-- Concrete witness for `lemma_6_1_quartic_geometry` at `(0, i)`. -/
 example : quarticF (0 : ℂ) Complex.I = 0 ∧ quarticFx (0 : ℂ) Complex.I = 0 ∧
     quarticFy (0 : ℂ) Complex.I = 0 :=
-  (lemma_6_1_quartic_geometry.2.1 0 Complex.I).mpr (Or.inl ⟨rfl, rfl⟩)
+  (lemma_6_1_quartic_geometry.2.1 0 Complex.I).mpr ⟨rfl, Or.inl rfl⟩
 
 end LogarithmicRigidity
