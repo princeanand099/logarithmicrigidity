@@ -135,6 +135,20 @@ def gmPoly (m : ℕ) (lam t : ℂ) : ℂ :=
 noncomputable def rhoLinearCoeff (m : ℕ) (ω : ℂ) : ℂ :=
   ((((m : ℂ) - 1) / 2 - ω) * (2 * ω + 1)) / (2 * (((m + 1 : ℕ) : ℂ) ^ 3) * (ω ^ m - 1))
 
+/-- Divergence `div(𝒴_m)(x, y)` of the `λ`-perturbation vector field `𝒴_m` (Proposition 5.4). -/
+noncomputable def divYm (m : ℕ) (x y : ℂ) : ℂ :=
+  ((m : ℂ) * x ^ (m - 1) * y - (m : ℂ) ^ 2 / (2 * ((m + 1 : ℕ) : ℂ)) * x ^ (m - 1) +
+    ((m - 1 : ℕ) : ℂ) * x ^ (m - 2) * y -
+    (m : ℂ) * ((m - 1 : ℕ) : ℂ) / (2 * ((m + 1 : ℕ) : ℂ)) * x ^ (m - 2)) +
+  (2 * x ^ (m - 1) * y - (1 : ℂ) / 2 * x ^ (m - 1) +
+    2 * (m : ℂ) / ((m + 1 : ℕ) : ℂ) * x ^ (m - 2) * y -
+    (m : ℂ) / (2 * ((m + 1 : ℕ) : ℂ)) * x ^ (m - 2))
+
+/-- Scaled cofactor `K̃_m(x, y) = K_m(x, y; λ) / λ` (Proposition 5.4). -/
+noncomputable def KmTilde (m : ℕ) (x y : ℂ) : ℂ :=
+  ((m + 1 : ℕ) : ℂ) * x ^ (m - 2) *
+    (x + (m : ℂ) / ((m + 1 : ℕ) : ℂ)) * (y - (m : ℂ) / (2 * ((m + 1 : ℕ) : ℂ)))
+
 /-! ## Section 6 & Appendix A: Explicit 2-Nodal Quartic and Degree-3 Counterexample -/
 
 /-- Explicit 2-nodal quartic `f(x, y)` (Equation (6.1)). -/
@@ -162,6 +176,17 @@ def vecP {R : Type*} [CommRing R] (x y : R) : R :=
 def vecQ {R : Type*} [CommRing R] (x y : R) : R :=
   320 * x ^ 3 + 16 * x ^ 2 * y + 21 * x ^ 2 - 144 * x * y ^ 2 + 78 * x * y -
     612 * x + 48 * y ^ 4 + 8 * y ^ 3 + 48 * y ^ 2 + 8 * y
+
+/-- Induced homogeneous 1-form of the degree-3 counterexample (6.2) restricted to
+`L_∞ = {Z = 0}` via Equation (2.1), with `p_3(X, Y) = 8 X³ + 172 X² Y - 312 Y³`,
+`q_3(X, Y) = 320 X³ + 16 X² Y - 144 X Y² + 8 Y³`, and `r(X, Y) = 48 Y³`. -/
+def counterexampleLinfForm {R : Type*} [CommRing R] (X Y : R) : InducedOneForm R where
+  X := X
+  Y := Y
+  Z := 0
+  Ph := 8 * X ^ 3 + 172 * X ^ 2 * Y - 312 * Y ^ 3
+  Qh := 320 * X ^ 3 + 16 * X ^ 2 * Y - 144 * X * Y ^ 2 + 8 * Y ^ 3
+  Rh := 48 * Y ^ 3
 
 /-- Cofactor `K(x, y)` for the counterexample system (Proposition 6.2). -/
 def cofactorK {R : Type*} [CommRing R] (x y : R) : R :=

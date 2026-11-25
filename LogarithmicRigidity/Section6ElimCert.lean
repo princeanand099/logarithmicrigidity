@@ -10,7 +10,7 @@ import LogarithmicRigidity.CounterexampleCert
 # Section 6 & Appendix A: Elimination, Hessians, `L_∞`, and Unconditional FTC Floquet Integrals
 
 100% unconditional Mathlib-only proofs:
-- `sing_Linf_empty`: `Sing(ℱ) ∩ L_∞ = ∅`
+- `sing_Linf_empty`: `Sing(ℱ) ∩ L_∞ = ∅` via exact `InducedOneForm` at `Z = 0`
 - `quartic_hessian_nodes`: Hessian determinants `192 ∓ 32i ≠ 0` at `(0, ±i)`
 - `sing_PQ_elim`: exact integer elimination `vecP x y = 0 → vecQ x y = 0 → x = 0 ∨ q4Poly x = 0 ∨ q6Poly x = 0`
 - `sing_PQ_x_zero`: exact `x = 0` stratum classification (`y = 0 ∨ y = I ∨ y = -I`)
@@ -21,16 +21,19 @@ import LogarithmicRigidity.CounterexampleCert
 
 namespace LogarithmicRigidity
 
-/-- **Proposition 6.2 (`L_∞`)**: `Sing(ℱ) ∩ L_∞ = ∅`. -/
+/-- **Proposition 6.2 (`L_∞`)**: `Sing(ℱ) ∩ L_∞ = ∅` for the exact induced homogeneous 1-form
+(2.1) of the degree-3 counterexample (6.2) restricted to `L_∞ = {Z = 0}`. -/
 theorem sing_Linf_empty (X Y : ℂ) (hXY : X ≠ 0 ∨ Y ≠ 0) :
-    ¬ (48 * Y ^ 4 = 0 ∧ -(48 * X * Y ^ 3) = 0 ∧
-      Y * (8 * X ^ 3 + 172 * X ^ 2 * Y + 48 * X * Y ^ 3 - 312 * Y ^ 3) -
-      X * (320 * X ^ 3 + 16 * X ^ 2 * Y - 144 * X * Y ^ 2 + 48 * Y ^ 4) = 0) := by
+    ¬ ((counterexampleLinfForm X Y).A = 0 ∧
+       (counterexampleLinfForm X Y).B = 0 ∧
+       (counterexampleLinfForm X Y).C = 0) := by
+  simp only [counterexampleLinfForm, InducedOneForm.A, InducedOneForm.B, InducedOneForm.C]
   rintro ⟨hA, _, hC⟩
   have hY : Y = 0 := by
     have hY4 : Y ^ 4 = 0 := by
+      have hA' : (48 : ℂ) * Y ^ 4 = 0 := by linear_combination hA
       have : (48 : ℂ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp hA).resolve_left this
+      exact (mul_eq_zero.mp hA').resolve_left this
     by_contra hne
     exact pow_ne_zero 4 hne hY4
   subst hY

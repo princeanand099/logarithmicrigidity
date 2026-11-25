@@ -7,9 +7,11 @@ import LogarithmicRigidity.Preliminaries
 import LogarithmicRigidity.RealLogarithmicCalculus
 import LogarithmicRigidity.JacobianSyzygies
 import LogarithmicRigidity.SyzygyKoszul
+import LogarithmicRigidity.Section5Completeness
 import LogarithmicRigidity.CaseRNonZero
 import LogarithmicRigidity.CounterexampleCert
 import LogarithmicRigidity.Section6ElimCert
+import LogarithmicRigidity.Section6GeometryCert
 import LogarithmicRigidity.Section6RealSingFree
 import LogarithmicRigidity.Section6Q4Cert
 import LogarithmicRigidity.Section6Q6Cert
