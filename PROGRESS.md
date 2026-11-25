@@ -1,12 +1,13 @@
 # Formalization Progress Record
 
-- **Current Stage**: All 6 parallel packages proved, audited, merged into `main`, and CI-verified with zero `sorry`s.
-- **Custom Axioms**: 0 (strictly `[propext, Classical.choice, Quot.sound]`; classical literature theorems packaged as explicit typed hypothesis bundles).
-- **Merged PRs**:
-  1. PR #1 (`feat/pkg2-logarithmic-rigidity`): `LogarithmicRigidity/LogarithmicRigidity.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-  2. PR #2 (`feat/pkg1-preliminaries-harnack`): `LogarithmicRigidity/Preliminaries.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-  3. PR #3 (`feat/pkg4-jacobian-syzygies-family`): `LogarithmicRigidity/JacobianSyzygies.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-  4. PR #4 (`feat/pkg3-real-logarithmic-case-r0`): `LogarithmicRigidity/RealLogarithmic.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-  5. PR #5 (`feat/pkg5-case-r-nonzero-quartic`): `LogarithmicRigidity/CaseRNonZero.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-  6. PR #6 (`feat/pkg6-counterexample-certificates`): `LogarithmicRigidity/CounterexampleCert.lean` — CI verified (`LAKE_BUILD_EXIT=0`), merged.
-- **Next Step**: Trigger `workflow_dispatch` (`full_verify: true`) or push a `v1.0.0` release tag on `main` to run the full hygiene + `AuditAxioms` + `lake comparator` gate.
+- **Current Stage**: 100% Unconditional Mathlib-Only Refactor Complete (zero custom axioms, zero hypothesis-bundle shortcuts, zero `sorry`s).
+- **Custom Axioms**: 0 (strictly `[propext, Classical.choice, Quot.sound]`).
+- **Active Modules (all imported by `LogarithmicRigidity.lean`)**:
+  - `LogarithmicRigidity/Preliminaries.lean` — Eq. (2.1), Lemma 2.1, Lemma 2.4
+  - `LogarithmicRigidity/RealLogarithmicCalculus.lean` — Prop. 4.1 (`C¹` local first integral invariance)
+  - `LogarithmicRigidity/JacobianSyzygies.lean` — Prop. 5.1 (Euler's Homogeneous Function Theorem on `MvPolynomial (Fin 3) ℂ`), Lemma 5.2, Lemma 5.3, Prop. 5.4 & Thm 1.3(2)
+  - `LogarithmicRigidity/CaseRNonZero.lean` — Thm 1.4(1) arithmetic bounds, Lemma 6.1 (Nullstellensatz singular locus `{(0, ±i)}`, compactness, IVT)
+  - `LogarithmicRigidity/CounterexampleCert.lean` — Prop. 6.2 (cofactor, SOS `q₄`/`M₄`, shifted `M₆`), Prop. 6.3 & Thm 1.4(2) (SOS Positivstellensatz `H₁`/`H₂`, Bernstein `H₂(1, y)`)
+  - `LogarithmicRigidity/Section6ElimCert.lean` — Lemma 6.1 Hessians, Prop. 6.2 (`L_∞`, `x * q₄ * q₆ ∈ ⟨P, Q⟩`, `x = 0` stratum), Prop. 6.3 (unconditional FTC Floquet integrals on both ovals)
+  - `LogarithmicRigidity/SanityChecks.lean` & `LogarithmicRigidity/AuditAxioms.lean`
+- **Not Formalized**: Theorems 1.1, 1.2, 1.3(1), and full geometric Theorem 1.4(1), which depend on 6 classical theories absent from Mathlib `v4.35.0` (Deligne 1971, Carnicer 1994, Harnack 1876, Serre duality on `ℙ²`, Camacho–Lins Neto–Sad 1984, Giacomini–Llibre–Viano 1996).
