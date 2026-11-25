@@ -33,7 +33,7 @@ private def linB (x : ℂ) : ℂ :=
   46080 * x ^ 6 + 316128 * x ^ 5 - 9313592 * x ^ 4 + 54454966 * x ^ 3 -
     116314829 * x ^ 2 - 89704058 * x + 221114400
 
-private noncomputable def y6Expr (x : ℂ) : ℂ :=
+noncomputable def y6Expr (x : ℂ) : ℂ :=
   ((2 : ℂ) / 14821289915489007) *
     (43460908062720000 * x ^ 5 + 25719179549745520 * x ^ 4 -
       177703134828928512 * x ^ 3 - 87621106272103745 * x ^ 2 +
@@ -59,7 +59,7 @@ private lemma sing_PQ_linear_y (x y : ℂ) (hP : vecP x y = 0) (hQ : vecQ x y = 
     mul_ne_zero (mul_ne_zero (by norm_num) hx) (pow_ne_zero 2 hx13)
   exact (mul_eq_zero.mp hR3).resolve_left hfac
 
-private lemma q6_y_eq (x y : ℂ) (hP : vecP x y = 0) (hQ : vecQ x y = 0) (hq : q6Poly x = 0) :
+lemma q6_y_eq (x y : ℂ) (hP : vecP x y = 0) (hQ : vecQ x y = 0) (hq : q6Poly x = 0) :
     y = y6Expr x := by
   have hx : x ≠ 0 := by
     intro h0; subst h0; unfold q6Poly at hq; norm_num at hq

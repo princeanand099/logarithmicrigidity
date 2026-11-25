@@ -8,6 +8,7 @@ import LogarithmicRigidity.CounterexampleCert
 import LogarithmicRigidity.Section6ElimCert
 import LogarithmicRigidity.Section6RealSingFree
 import LogarithmicRigidity.Section6Q4Cert
+import LogarithmicRigidity.Section6Q6Cert
 import LogarithmicRigidityConditional.Section3LogarithmicRigidity
 import LogarithmicRigidityConditional.Section4RealLogarithmic
 import LogarithmicRigidityConditional.Section5DegreeMPlusOne
@@ -19,8 +20,8 @@ Formalizes the complete proofs of:
 - **Theorem 1.4(1)**: Full 4-case proof of the sharpened upper bounds for `r ≢ 0`
   (`0` for `m = 1`, `1` for `m = 2`, `2` for `m = 3`, and `m(m-1)/2 - 1 + a_{m+1}` for `m ≥ 4`),
   including the `m = 3` real-cusp `A₂` unibranch analysis.
-- **Theorem 1.4(2)**: Certification of the explicit degree-3 counterexample (6.2) on the
-  2-nodal quartic (6.1) strictly exceeding `H_nodal(3) = 1`.
+- **Theorem 1.4(2)**: Complete certification of the explicit degree-3 counterexample (6.2) on
+  the 2-nodal quartic (6.1) strictly exceeding `H_nodal(3) = 1`.
 -/
 
 namespace LogarithmicRigidityConditional
@@ -142,10 +143,10 @@ theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (hm : 1 ≤ m)
 
 /-- **Theorem 1.4(2) (Counterexample Synthesis)**: The explicit degree-3 system (6.2) on the
 2-nodal quartic (6.1) leaves `f = 0` invariant, has no singularities on `L_∞` or on the real
-ovals of `f = 0`, satisfies `jacDet ≠ 0 ∧ τ ∉ [4, ∞)` on both the `x = 0` and `q₄(x) = 0`
-strata and strict positivity of `M₆` on `[4, ∞)`, has strictly positive Floquet integral and
-repelling multiplier `> 1` on any `C¹` periodic orbit on either oval, and strictly exceeds
-`H_nodal(3) = 1`. -/
+ovals of `f = 0`, satisfies `jacDet ≠ 0 ∧ τ ∉ [4, ∞)` at **every** complex affine singularity
+across all three strata (`x = 0`, `q₄(x) = 0`, `q₆(x) = 0`), has strictly positive shifted
+cofactors `H₁`, `H₂` (certifying strictly positive Floquet integrals and repelling multipliers
+`> 1` on both ovals), and strictly exceeds `H_nodal(3) = 1`. -/
 theorem theorem_1_4_part2_counterexample :
     (∀ x y : ℂ, vecP x y * quarticFx x y + vecQ x y * quarticFy x y =
       cofactorK x y * quarticF x y) ∧
@@ -153,7 +154,7 @@ theorem theorem_1_4_part2_counterexample :
       ¬ (48 * Y ^ 4 = 0 ∧ -(48 * X * Y ^ 3) = 0 ∧
         Y * (8 * X ^ 3 + 172 * X ^ 2 * Y + 48 * X * Y ^ 3 - 312 * Y ^ 3) -
         X * (320 * X ^ 3 + 16 * X ^ 2 * Y - 144 * X * Y ^ 2 + 48 * Y ^ 4) = 0)) ∧
-    (∀ x y : ℂ, vecP x y = 0 → vecQ x y = 0 → q4Poly x = 0 →
+    (∀ x y : ℂ, vecP x y = 0 → vecQ x y = 0 →
       jacDet x y ≠ 0 ∧ IsNonDicriticalTau (tauRatio (jacTr x y) (jacDet x y))) ∧
     (∀ x y : ℝ, quarticF x y = 0 → ¬ (vecP x y = 0 ∧ vecQ x y = 0)) ∧
     (∀ x y : ℝ, quarticF x y = 0 → x < 0 → 0 < H1Scaled x y) ∧
@@ -161,7 +162,7 @@ theorem theorem_1_4_part2_counterexample :
     Hnodal 3 < 2 ∧ 2 = rNonZeroBound 3 := by
   exact ⟨prop_6_2_counterexample_nondicritical.1,
          sing_Linf_empty,
-         prop_6_2_q4_stratum_nondicritical,
+         prop_6_2_all_affine_singularities_nondicritical,
          prop_6_2_no_real_singularity_on_quartic,
          prop_6_3_and_theorem_1_4_part2.1,
          prop_6_3_and_theorem_1_4_part2.2.1,

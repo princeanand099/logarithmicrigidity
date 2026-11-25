@@ -23,6 +23,9 @@
     "LogarithmicRigidity.sing_PQ_x_zero",
     "LogarithmicRigidity.prop_6_2_counterexample_nondicritical",
     "LogarithmicRigidity.prop_6_2_no_real_singularity_on_quartic",
+    "LogarithmicRigidity.prop_6_2_q4_stratum_nondicritical",
+    "LogarithmicRigidity.prop_6_2_q6_stratum_nondicritical",
+    "LogarithmicRigidity.prop_6_2_all_affine_singularities_nondicritical",
     "LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2",
     "LogarithmicRigidity.floquet_integral_pos_oval1",
     "LogarithmicRigidity.floquet_integral_pos_oval2"
@@ -30,7 +33,7 @@
   "definition_names": [],
   "permitted_axioms": [
     "propext",
-    "Quot.sound",
-    "Classical.choice"
+    "Classical.choice",
+    "Quot.sound"
   ]
 }
