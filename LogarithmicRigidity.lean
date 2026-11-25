@@ -12,9 +12,12 @@ import LogarithmicRigidity.CounterexampleCert
 import LogarithmicRigidity.Section6ElimCert
 import LogarithmicRigidity.Section6RealSingFree
 import LogarithmicRigidity.SanityChecks
+import LogarithmicRigidityConditional
 
 /-!
 # Logarithmic Rigidity and Algebraic Limit Cycles of Non-Dicritical Foliations
 
-Root aggregator importing every verified Lean 4 module in this repository.
+Root aggregator importing:
+1. All unconditional Mathlib-only modules (`LogarithmicRigidity.*`, zero custom axioms).
+2. The strictly separated conditional full-manuscript formalization (`LogarithmicRigidityConditional`).
 -/
