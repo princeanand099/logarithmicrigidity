@@ -76,12 +76,13 @@ private lemma isRegularSeq3_X012 :
     intro m hm
     by_contra h0
     have hm0 : m 0 = 0 := by omega
-    have hm1_0 : (m + Finsupp.single (1 : Fin 3) 1) 0 = 0 := by
-      simp [Finsupp.add_apply, Finsupp.single_apply, hm0]
-    have hL : (x * MvPolynomial.X 1).coeff (m + Finsupp.single (1 : Fin 3) 1) = x.coeff m :=
+    let m1 : Fin 3 →₀ ℕ := m + Finsupp.single (1 : Fin 3) 1
+    have hm1_0 : m1 0 = 0 := by
+      simp [m1, Finsupp.add_apply, Finsupp.single_apply, hm0]
+    have hL : (x * MvPolynomial.X 1).coeff m1 = x.coeff m :=
       mem_support_of_mul_X_eq 1 m
-    have hR : (y * MvPolynomial.X 0).coeff (m + Finsupp.single (1 : Fin 3) 1) = 0 :=
-      coeff_mul_X_eq_zero_of_zero 0 (m + Finsupp.single (1 : Fin 3) 1) hm1_0
+    have hR : (y * MvPolynomial.X 0).coeff m1 = 0 :=
+      coeff_mul_X_eq_zero_of_zero 0 m1 hm1_0
     rw [hxy] at hL
     exact (MvPolynomial.mem_support_iff.mp hm) (hL.symm.trans hR)
   · intro x y z hxyz
@@ -91,17 +92,17 @@ private lemma isRegularSeq3_X012 :
       push Not at h01
       have hm0 : m 0 = 0 := by omega
       have hm1 : m 1 = 0 := by omega
-      have hm2_0 : (m + Finsupp.single (2 : Fin 3) 1) 0 = 0 := by
-        simp [Finsupp.add_apply, Finsupp.single_apply, hm0]
-      have hm2_1 : (m + Finsupp.single (2 : Fin 3) 1) 1 = 0 := by
-        simp [Finsupp.add_apply, Finsupp.single_apply, hm1]
-      have hL : (x * MvPolynomial.X 2).coeff (m + Finsupp.single (2 : Fin 3) 1) = x.coeff m :=
+      let m2 : Fin 3 →₀ ℕ := m + Finsupp.single (2 : Fin 3) 1
+      have hm2_0 : m2 0 = 0 := by
+        simp [m2, Finsupp.add_apply, Finsupp.single_apply, hm0]
+      have hm2_1 : m2 1 = 0 := by
+        simp [m2, Finsupp.add_apply, Finsupp.single_apply, hm1]
+      have hL : (x * MvPolynomial.X 2).coeff m2 = x.coeff m :=
         mem_support_of_mul_X_eq 2 m
-      have hR : (y * MvPolynomial.X 0 + z * MvPolynomial.X 1).coeff
-          (m + Finsupp.single (2 : Fin 3) 1) = 0 := by
+      have hR : (y * MvPolynomial.X 0 + z * MvPolynomial.X 1).coeff m2 = 0 := by
         rw [MvPolynomial.coeff_add,
-          coeff_mul_X_eq_zero_of_zero 0 _ hm2_0,
-          coeff_mul_X_eq_zero_of_zero 1 _ hm2_1, add_zero]
+          coeff_mul_X_eq_zero_of_zero 0 m2 hm2_0,
+          coeff_mul_X_eq_zero_of_zero 1 m2 hm2_1, add_zero]
       rw [hxyz] at hL
       exact (MvPolynomial.mem_support_iff.mp hm) (hL.symm.trans hR)
     let s0 := x.support.filter (fun m ↦ 1 ≤ m 0)
