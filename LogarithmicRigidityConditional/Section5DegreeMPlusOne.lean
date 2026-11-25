@@ -66,6 +66,10 @@ theorem lemma_m3_nondicritical_delta_tau (F : ProjectiveFoliation) (S_alg : Redu
     exact theorem_1_3_part1_smooth_nonexistence F S_alg 3 delta tau (by omega) hF_deg hirred h0 hnd
   have hdimca := dimca_syzygy_defect_formula S_alg 3 delta tau (by omega) hirred
   have hdef : tjurinaH1Defect S_alg 4 = tau - 1 := hdimca.2.2 rfl hdelta
+  have hdim : syzygyDim S_alg 3 = 3 + (tau - 1) := by
+    have h1 := hdimca.1
+    rw [show (3 + 1 : ℕ) = 4 from rfl, hdef] at h1
+    exact h1
   have htau : 2 ≤ tau := by
     by_contra hlt
     have hdim3 : syzygyDim S_alg 3 = 3 := by omega
