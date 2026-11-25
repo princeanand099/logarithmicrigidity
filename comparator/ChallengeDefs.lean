@@ -8,10 +8,8 @@ import Mathlib
 /-!
 # Public Definitions for Logarithmic Rigidity and Algebraic Limit Cycles
 
-This module contains all public definitions, explicit polynomial families, and
-structured classical-literature hypotheses used in `Challenge.lean` and the
-`LogarithmicRigidity` formalization of Prince Anand (November 2026),
-*Logarithmic Rigidity and Algebraic Limit Cycles of Non-Dicritical Foliations*.
+This module contains ONLY genuine mathematical definitions built directly on Lean 4 core
+and Mathlib `v4.35.0` (zero custom axioms, zero hypothesis-bundle shortcuts).
 -/
 
 namespace LogarithmicRigidity
@@ -73,120 +71,7 @@ def InducedOneForm.B {R : Type*} [CommRing R] (ω : InducedOneForm R) : R :=
 def InducedOneForm.C {R : Type*} [CommRing R] (ω : InducedOneForm R) : R :=
   ω.Y * ω.Ph - ω.X * ω.Qh
 
-/-! ## Section 3: Blow-Up Resolution and Logarithmic Rigidity Structures -/
-
-/-- Local multiplicity data at stage `j` of an embedded log-resolution `π : X̃ → ℂℙ²`. -/
-structure BlowUpStepData where
-  /-- Algebraic multiplicity `ν_p(ℱ_{j-1})` of the strict transform foliation at center `p`. -/
-  nuF : ℕ
-  /-- Multiplicity `ν_p(C_{j-1})` of the reduced total transform curve at center `p`. -/
-  nuC : ℕ
-  /-- Whether the center `p` is a regular point of `ℱ_{j-1}` (with `ν_p(ℱ)=0, ν_p(C)=1`)
-  or a non-dicritical singularity satisfying Carnicer's inequality `ν_p(C) ≤ ν_p(ℱ) + 1`. -/
-  nonDicritical : nuC ≤ nuF + 1
-
-/-- Embedded log-resolution sequence of length `N` for a reduced non-dicritical invariant curve `S`. -/
-structure LogResolutionData (N : ℕ) where
-  steps : Fin N → BlowUpStepData
-  initialOrder : ℕ
-
-/-- Cumulative holomorphic factor exponent `ord(h_j)` along the blow-up sequence (Lemma 3.1). -/
-def cumulativeOrder {N : ℕ} (res : LogResolutionData N) : Fin (N + 1) → ℕ
-  | ⟨0, _⟩ => res.initialOrder
-  | ⟨j + 1, hj⟩ =>
-      cumulativeOrder res ⟨j, Nat.lt_of_succ_lt hj⟩ +
-        ((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuF + 1 -
-          (res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuC)
-
-/-- Irreducible component data of a reduced invariant curve `S = {F₁ ··· F_k = 0}` of degree `n`. -/
-structure InvariantCurveDecomposition where
-  k : ℕ
-  degF : Fin k → ℕ
-  degF_pos : ∀ i, 0 < degF i
-
-/-- Total degree `∑ deg F_i` of the decomposition. -/
-def InvariantCurveDecomposition.totalDeg (S : InvariantCurveDecomposition) : ℕ :=
-  ∑ i : Fin S.k, S.degF i
-
-/-- Logarithmic 1-form data `ω/F = ∑ λ_i dF_i/F_i` with nonzero residues and residue sum `0`. -/
-structure LogarithmicFormData (S : InvariantCurveDecomposition) where
-  lam : Fin S.k → ℂ
-  lam_ne_zero : ∀ i, lam i ≠ 0
-  residue_sum_zero : (∑ i : Fin S.k, lam i * (S.degF i : ℂ)) = 0
-
-/-- Classical external hypothesis bundle for Section 3 (Carnicer [5], Deligne [10],
-Hartogs + `H⁰(ℂℙ², Ω¹) = 0`, and Bézout non-dicriticality obstruction for rational first integrals). -/
-structure Section3ClassicalData (m : ℕ) (S : InvariantCurveDecomposition) where
-  deg_eq : S.totalDeg = m + 2
-  /-- Proposition 3.2 output (via Lemma 3.1 + Deligne [10] + saturation + residue theorem on `ℂℙ¹`). -/
-  residues : LogarithmicFormData S
-  /-- No nonconstant rational first integral `F₁^a / F₂^b` with `a, b > 0` can exist for a
-  non-dicritical curve `S` (Bézout's theorem forces `S₁ ∩ S₂ ≠ ∅`, making every intersection point
-  dicritical). -/
-  no_two_component_first_integral :
-    ∀ (hk : S.k = 2) (a b : ℕ), 0 < a → 0 < b →
-      (a : ℂ) * (S.degF ⟨0, by omega⟩ : ℂ) = (b : ℂ) * (S.degF ⟨1, by omega⟩ : ℂ) →
-      residues.lam ⟨0, by omega⟩ * (b : ℂ) + residues.lam ⟨1, by omega⟩ * (a : ℂ) = 0 →
-      False
-
-/-! ## Section 4: Real-Logarithmic Obstruction and Standard Case `r ≡ 0` -/
-
-/-- Decomposition of a real reduced curve `S = {F = 0}` into real affine components,
-optional `L_∞`, and complex-conjugate pairs of non-real irreducible factors. -/
-structure RealCurveSplit where
-  realAffineDegs : List ℕ
-  realAffineDegs_pos : ∀ d ∈ realAffineDegs, 0 < d
-  hasLineAtInfinity : Bool
-  nonRealPairDegs : List ℕ
-  nonRealPairDegs_pos : ∀ d ∈ nonRealPairDegs, 0 < d
-
-/-- Total projective degree of a `RealCurveSplit`. -/
-def RealCurveSplit.totalDeg (S : RealCurveSplit) : ℕ :=
-  S.realAffineDegs.sum + (if S.hasLineAtInfinity then 1 else 0) + 2 * S.nonRealPairDegs.sum
-
-/-- Real-logarithmic center obstruction hypothesis (Giacomini–Llibre–Viano [14] +
-implicit function theorem on tubular neighborhood of `γ` for `ũ = f₁ ∏ |f_i|^{λ_i/λ_1}`). -/
-structure RealLogCenterObstruction (S : RealCurveSplit) where
-  hasLimitCycle : Prop
-  /-- Purely real logarithmic foliations (`nonRealPairDegs = []`) have no isolated limit cycles. -/
-  no_purely_real_limit_cycle : hasLimitCycle → S.nonRealPairDegs ≠ []
-
-/-- Data for a standard planar system (`r ≡ 0`) of affine degree `m ≥ 1` with saturated
-foliation degree `m' ≤ m` and maximal reduced non-dicritical invariant curve `S`. -/
-structure StandardSystemData (m : ℕ) where
-  hm : 1 ≤ m
-  foliationDeg : ℕ
-  foliationDeg_le : foliationDeg ≤ m
-  curve : RealCurveSplit
-  numLimitCycles : ℕ
-  /-- If `m' = 0`, the foliation is a radial pencil and has `0` limit cycles. -/
-  zero_if_radial : foliationDeg = 0 → numLimitCycles = 0
-  /-- Carnicer's degree bound `deg S ≤ m' + 2` when `m' ≥ 1`. -/
-  carnicer_deg : 1 ≤ foliationDeg → curve.totalDeg ≤ foliationDeg + 2
-  /-- When `m' = m` (and `r ≡ 0`), `L_∞` is invariant and lies in `S`. -/
-  line_inf_if_full : foliationDeg = m → curve.hasLineAtInfinity = true
-  /-- Harnack oval bound: `numLimitCycles ≤ ∑ h(d_j)` over real affine components. -/
-  harnack_bound : numLimitCycles ≤ (curve.realAffineDegs.map hBound).sum
-  /-- Theorem 1.1 + Proposition 4.1 when `deg S = m' + 2` and `numLimitCycles > 0`:
-  at least one complex conjugate pair of non-real factors must exist. -/
-  log_obstruction :
-    1 ≤ foliationDeg → curve.totalDeg = foliationDeg + 2 → 0 < numLimitCycles →
-      curve.nonRealPairDegs ≠ []
-
 /-! ## Section 5: Jacobian Syzygies and Degree-`(m + 1)` Irreducible Curves -/
-
-/-- Abstract vector-space model for Proposition 5.1: homogeneous 1-forms `V_m(F)` with
-`i_E ω = 0` and `ω ∧ dF ≡ 0 (mod F)`, and Jacobian syzygies `Syz(J_F)_{d-1}` over `ℂ`. -/
-structure ContractionIdentityData (R : Type*) [CommRing R] where
-  X : R
-  Y : R
-  Z : R
-  Fx : R
-  Fy : R
-  Fz : R
-  F : R
-  d : ℕ
-  euler_F : X * Fx + Y * Fy + Z * Fz = (d : R) * F
 
 /-- Section 5 curve `f_m(x, y) = x^m - y^m + x^{m+1} + 2 y^{m+1}` (Equation (5.2)). -/
 def fmPoly (m : ℕ) (x y : ℂ) : ℂ :=
@@ -229,31 +114,7 @@ def gmPoly (m : ℕ) (lam t : ℂ) : ℂ :=
 noncomputable def rhoLinearCoeff (m : ℕ) (ω : ℂ) : ℂ :=
   ((((m : ℂ) - 1) / 2 - ω) * (2 * ω + 1)) / (2 * (((m + 1 : ℕ) : ℂ) ^ 3) * (ω ^ m - 1))
 
-/-! ## Section 6 & Appendix A: Case `r ≢ 0` and Explicit Degree-3 Counterexample -/
-
-/-- Data for a foliation of degree `m ≥ 1` with `r ≢ 0` and all invariant curves non-dicritical. -/
-structure RNonZeroSystemData (m : ℕ) where
-  hm : 1 ≤ m
-  curve : RealCurveSplit
-  numLimitCycles : ℕ
-  /-- `L_∞` is not invariant when `r ≢ 0`. -/
-  no_line_inf : curve.hasLineAtInfinity = false
-  /-- Carnicer's bound `deg S ≤ m + 2`. -/
-  carnicer_deg : curve.totalDeg ≤ m + 2
-  /-- Harnack oval bound on real affine components. -/
-  harnack_bound : numLimitCycles ≤ (curve.realAffineDegs.map hBound).sum
-  /-- Theorem 1.1 + Proposition 4.1 when `deg S = m + 2` and `numLimitCycles > 0`. -/
-  log_obstruction :
-    curve.totalDeg = m + 2 → 0 < numLimitCycles → curve.nonRealPairDegs ≠ []
-  /-- Theorem 1.3(1) + Proposition 5.1 obstruction when `deg S = m + 1` and `S` is irreducible:
-  - for `m = 1`: impossible (`numLimitCycles = 0`);
-  - for `m = 2`: singular cubic has `g ≤ 0` and odd degree, hence `0` ovals;
-  - for `m = 3`: `τ(S) ≥ 2` forces either `δ ≥ 2` (`g ≤ 1`, `≤ 2` ovals) or `δ = 1` real cusp
-    (unibranch component contains singular point, leaving `≤ 2` smooth ovals);
-  - for `m ≥ 4`: `δ ≥ 1` forces `g ≤ m(m-1)/2 - 1`, hence `≤ m(m-1)/2 - 1 + a_{m+1}` ovals. -/
-  irred_m_plus_one_bound :
-    curve.realAffineDegs = [m + 1] → curve.nonRealPairDegs = [] →
-      numLimitCycles ≤ rNonZeroBound m
+/-! ## Section 6 & Appendix A: Explicit 2-Nodal Quartic and Degree-3 Counterexample -/
 
 /-- Explicit 2-nodal quartic `f(x, y)` (Equation (6.1)). -/
 def quarticF {R : Type*} [CommRing R] (x y : R) : R :=

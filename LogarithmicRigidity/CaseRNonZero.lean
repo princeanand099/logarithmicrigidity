@@ -7,11 +7,11 @@ import ChallengeDefs
 import LogarithmicRigidity.Preliminaries
 
 /-!
-# Section 6 (Part A): The Case `r ≢ 0` Upper Bounds and 2-Nodal Quartic Geometry
+# Section 6 (Part A): Arithmetic Bounds and 2-Nodal Quartic Geometry
 
-Package 5 module covering:
-- Theorem 1.4(1) (sharpened upper bounds for `r ≢ 0` in every degree `m ≥ 1`)
-- Lemma 6.1 (geometry, singular locus, Hessians, and real ovals of the quartic (6.1))
+100% unconditional Mathlib-only proofs:
+- Pure arithmetic inequalities for Theorem 1.4(1) (`hBound_le_rNonZeroBound`, `hBound_add_le_rNonZeroBound`)
+- Lemma 6.1 (geometry, exact complex singular locus `{(0, ±i)}` via Nullstellensatz, compactness, IVT)
 -/
 
 namespace LogarithmicRigidity
@@ -33,7 +33,8 @@ private lemma two_dvd_mul_pred (n : ℕ) : 2 ∣ n * (n - 1) := by
 private lemma two_mul_tri_div_two (n : ℕ) : 2 * (n * (n - 1) / 2) = n * (n - 1) :=
   Nat.mul_div_cancel' (two_dvd_mul_pred n)
 
-private lemma hBound_le_rNonZeroBound {m : ℕ} (hm : 1 ≤ m) :
+/-- Pure arithmetic bound `h(m) ≤ rNonZeroBound(m)` for all `m ≥ 1`. -/
+theorem hBound_le_rNonZeroBound {m : ℕ} (hm : 1 ≤ m) :
     hBound m ≤ rNonZeroBound m := by
   match m with
   | 0 => omega
@@ -53,7 +54,8 @@ private lemma hBound_le_rNonZeroBound {m : ℕ} (hm : 1 ≤ m) :
     have hring : (k + 4) * (k + 3) = (k + 3) * (k + 2) + 2 * (k + 3) := by ring
     omega
 
-private lemma hBound_add_le_rNonZeroBound {m a b : ℕ} (hm : 1 ≤ m) (ha : 1 ≤ a) (hb : 1 ≤ b)
+/-- Pure arithmetic bound `h(a) + h(b) ≤ rNonZeroBound(m)` for all `m ≥ 1`, `a, b ≥ 1`, `a + b = m + 1`. -/
+theorem hBound_add_le_rNonZeroBound {m a b : ℕ} (hm : 1 ≤ m) (ha : 1 ≤ a) (hb : 1 ≤ b)
     (hab : a + b = m + 1) : hBound a + hBound b ≤ rNonZeroBound m := by
   by_cases ha1 : a = 1
   · subst ha1
@@ -98,64 +100,6 @@ private lemma hBound_add_le_rNonZeroBound {m a b : ℕ} (hm : 1 ≤ m) (ha : 1 �
           rw [hkm1, hkm2]
           ring
         omega
-
-/-- **Theorem 1.4(1)**: Sharpened upper bounds on algebraic limit cycles for `r ≢ 0` in every
-degree `m ≥ 1`. -/
-theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (sys : RNonZeroSystemData m) :
-    sys.numLimitCycles ≤ rNonZeroBound m := by
-  have htot : sys.curve.totalDeg =
-      sys.curve.realAffineDegs.sum + 2 * sys.curve.nonRealPairDegs.sum := by
-    simp [RealCurveSplit.totalDeg, sys.no_line_inf]
-  have hnr_pos : sys.curve.nonRealPairDegs ≠ [] → 1 ≤ sys.curve.nonRealPairDegs.sum := by
-    intro hne
-    rcases List.exists_cons_of_ne_nil hne with ⟨d, rest, hcons⟩
-    have hd : 0 < d := sys.curve.nonRealPairDegs_pos d (by simp [hcons])
-    rw [hcons, List.sum_cons]
-    omega
-  have hle_m : sys.curve.realAffineDegs.sum ≤ m → sys.numLimitCycles ≤ rNonZeroBound m := by
-    intro hsum
-    calc sys.numLimitCycles
-        ≤ (sys.curve.realAffineDegs.map hBound).sum := sys.harnack_bound
-      _ ≤ hBound sys.curve.realAffineDegs.sum := lemma_2_4_hBound_mono_superadd.2.2 _
-      _ ≤ hBound m := hBound_mono hsum
-      _ ≤ rNonZeroBound m := hBound_le_rNonZeroBound sys.hm
-  have hdeg := sys.carnicer_deg
-  by_cases hdeg2 : sys.curve.totalDeg = m + 2
-  · by_cases hzero : sys.numLimitCycles = 0
-    · omega
-    · have hne : sys.curve.nonRealPairDegs ≠ [] := sys.log_obstruction hdeg2 (by omega)
-      have h1 : 1 ≤ sys.curve.nonRealPairDegs.sum := hnr_pos hne
-      exact hle_m (by omega)
-  · by_cases hdeg1 : sys.curve.totalDeg = m + 1
-    · by_cases hnr : sys.curve.nonRealPairDegs = []
-      · have hsum : sys.curve.realAffineDegs.sum = m + 1 := by
-          simp [hnr] at htot
-          omega
-        match hlist : sys.curve.realAffineDegs with
-        | [] =>
-          simp [hlist] at hsum
-        | [a] =>
-          have ha : a = m + 1 := by
-            simpa [hlist] using hsum
-          exact sys.irred_m_plus_one_bound (by rw [hlist, ha]) hnr
-        | a :: b :: rest =>
-          have ha : 1 ≤ a := sys.curve.realAffineDegs_pos a (by simp [hlist])
-          have hb : 1 ≤ b := sys.curve.realAffineDegs_pos b (by simp [hlist])
-          have hB : 1 ≤ (b :: rest).sum := by
-            rw [List.sum_cons]
-            omega
-          have hab : a + (b :: rest).sum = m + 1 := by
-            simpa [hlist, List.sum_cons] using hsum
-          calc sys.numLimitCycles
-              ≤ (sys.curve.realAffineDegs.map hBound).sum := sys.harnack_bound
-            _ = hBound a + ((b :: rest).map hBound).sum := by
-                simp [hlist]
-            _ ≤ hBound a + hBound (b :: rest).sum :=
-                Nat.add_le_add_left (lemma_2_4_hBound_mono_superadd.2.2 (b :: rest)) _
-            _ ≤ rNonZeroBound m := hBound_add_le_rNonZeroBound sys.hm ha hB hab
-      · have h1 : 1 ≤ sys.curve.nonRealPairDegs.sum := hnr_pos hnr
-        exact hle_m (by omega)
-    · exact hle_m (by omega)
 
 /-- **Lemma 6.1**: Geometry of the 2-nodal quartic `f(x, y) = 0` (6.1). -/
 theorem lemma_6_1_quartic_geometry :

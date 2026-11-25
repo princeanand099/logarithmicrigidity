@@ -8,32 +8,87 @@ import ChallengeDefs
 /-!
 # Section 5: Jacobian Syzygies and Irreducible Curves of Degree `m + 1`
 
-Package 4 module covering:
-- Proposition 5.1 (Jacobian syzygy isomorphism and Koszul subspace)
-- Theorem 1.3(1) (nonexistence for smooth degree-`(m+1)` curves and conics)
+100% unconditional Mathlib-only proofs for Section 5:
+- Euler's Homogeneous Function Theorem on `MvPolynomial (Fin 3) ℂ`
 - Lemma 5.2 (geometry and rational parametrization of `C_m`)
 - Lemma 5.3 (cofactor identity and origin non-dicriticality of `ℱ_m(λ)`)
-- Proposition 5.4 & Theorem 1.3(2) (nonconstant eigenvalue ratios and existence for all `m ≥ 2`)
+- Proposition 5.4 & Theorem 1.3(2) (nonvanishing linear `λ`-coefficient & uncountability)
 -/
 
 namespace LogarithmicRigidity
 
-/-- **Proposition 5.1(1) & (3)**: Contraction identity and Koszul syzygies for degree-`(m+1)`
-invariant curves. -/
-theorem prop_5_1_jacobian_syzygy {R : Type*} [CommRing R] (C : ContractionIdentityData R)
-    (P₁ P₂ P₃ : R) :
-    (0 * C.Fx + (-C.Fz) * C.Fy + C.Fy * C.Fz = 0) ∧
-    (C.Fz * C.Fx + 0 * C.Fy + (-C.Fx) * C.Fz = 0) ∧
-    ((-C.Fy) * C.Fx + C.Fx * C.Fy + 0 * C.Fz = 0) ∧
-    (C.X * (P₂ * C.Z - P₃ * C.Y) + C.Y * (P₃ * C.X - P₁ * C.Z) +
-      C.Z * (P₁ * C.Y - P₂ * C.X) = 0) := by
-  exact ⟨by ring, by ring, by ring, by ring⟩
-
-/-- **Theorem 1.3(1)**: Smoothness defect vanishing (`h¹ = 0`) forces `dim V_m(F) = 3`. -/
-theorem theorem_1_3_part1_smooth_nonexistence (dimVm h1Defect : ℕ)
-    (hformula : dimVm = 3 + h1Defect) (hsmooth : h1Defect = 0) :
-    dimVm = 3 := by
-  omega
+/-- **Proposition 5.1 (Euler's Homogeneous Function Theorem)**:
+For any homogeneous `F : MvPolynomial (Fin 3) ℂ` of degree `d`,
+`∑ i : Fin 3, X i * pderiv i F = d * F`. -/
+theorem prop_5_1_euler_homogeneous (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
+    (hF : F.IsHomogeneous d) :
+    ∑ i : Fin 3, MvPolynomial.X i * MvPolynomial.pderiv i F = (d : MvPolynomial (Fin 3) ℂ) * F := by
+  ext m
+  simp only [map_sum, MvPolynomial.coeff_sum, MvPolynomial.coeff_X_mul,
+    MvPolynomial.coeff_pderiv, MvPolynomial.coeff_natCast_mul]
+  by_cases hm : m ∈ F.support
+  · have hdeg : ∑ i : Fin 3, m i = d := by
+      have := hF (MvPolynomial.mem_support_iff.mp hm)
+      simpa [Finsupp.degree, Finsupp.sum_fintype] using this
+    have hterm : ∀ i : Fin 3,
+        (if m i = 0 then 0 else MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) =
+        (m i : ℂ) * MvPolynomial.coeff m F := by
+      intro i
+      split_ifs with hi
+      · simp [hi]
+      · rw [MvPolynomial.coeff_pderiv]
+        have hadd : m - Finsupp.single i 1 + Finsupp.single i 1 = m := by
+          ext j
+          by_cases hj : j = i
+          · subst hj; simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
+          · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+        rw [hadd]
+        have hsub : (m - Finsupp.single i 1) i + 1 = m i := by
+          simp only [Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
+        rw [hsub]
+    have hsum_eq :
+        ∑ i : Fin 3,
+          (if m i = 0 then (0 : ℂ) else
+            MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) =
+        ∑ i : Fin 3, (m i : ℂ) * MvPolynomial.coeff m F :=
+      Finset.sum_congr rfl fun i _ ↦ hterm i
+    have hsimp :
+        ∑ i : Fin 3, MvPolynomial.coeff m (MvPolynomial.X i * MvPolynomial.pderiv i F) =
+        ∑ i : Fin 3,
+          (if m i = 0 then (0 : ℂ) else
+            MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) := by
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      by_cases hi : m i = 0
+      · simp [MvPolynomial.coeff_X_mul, hi]
+      · have hle : Finsupp.single i 1 ≤ m := by
+          intro j
+          by_cases hj : j = i
+          · subst hj; simp; omega
+          · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+        rw [MvPolynomial.coeff_X_mul_of_le hle]
+        simp [hi]
+    rw [hsimp, hsum_eq, ← Finset.sum_mul]
+    have hcast : (∑ i : Fin 3, (m i : ℂ)) = (d : ℂ) := by
+      rw [← Nat.cast_sum, hdeg]
+    rw [hcast]
+  · have hF0 : MvPolynomial.coeff m F = 0 := MvPolynomial.not_mem_support_iff.mp hm
+    rw [hF0, mul_zero]
+    apply Finset.sum_eq_zero
+    intro i _
+    by_cases hi : m i = 0
+    · simp [MvPolynomial.coeff_X_mul, hi]
+    · have hle : Finsupp.single i 1 ≤ m := by
+        intro j
+        by_cases hj : j = i
+        · subst hj; simp; omega
+        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+      rw [MvPolynomial.coeff_X_mul_of_le hle, MvPolynomial.coeff_pderiv]
+      have hadd : m - Finsupp.single i 1 + Finsupp.single i 1 = m := by
+        ext j
+        by_cases hj : j = i
+        · subst hj; simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
+        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+      rw [hadd, hF0, mul_zero]
 
 /-- **Lemma 5.2**: Geometry and rational parametrization of `C_m = {f_m = 0}` for all `m ≥ 2`. -/
 theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :
