@@ -45,7 +45,16 @@ private lemma coeff_mul_X_eq_zero_of_zero {f : MvPolynomial (Fin 3) ℂ} (i : Fi
     have hi : (pq.1 + pq.2) i = m i := congr_arg (fun g ↦ g i) hadd
     rw [Finsupp.add_apply, h2, Finsupp.single_eq_same, hm] at hi
     omega
-  · simp [MvPolynomial.coeff_monomial, h2]
+  · simp [MvPolynomial.coeff_monomial, Ne.symm h2]
+
+private lemma sub_single_add_single {m : Fin 3 →₀ ℕ} {i : Fin 3} (hmi : 1 ≤ m i) :
+    m - Finsupp.single i 1 + Finsupp.single i 1 = m := by
+  ext j
+  by_cases hj : j = i
+  · subst hj
+    simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]
+    omega
+  · simp [Finsupp.single_eq_of_ne hj]
 
 private lemma exists_mul_X_of_support_pos (f : MvPolynomial (Fin 3) ℂ) (i : Fin 3)
     (h : ∀ m ∈ f.support, 1 ≤ m i) :
@@ -54,15 +63,7 @@ private lemma exists_mul_X_of_support_pos (f : MvPolynomial (Fin 3) ℂ) (i : Fi
   rw [Finset.sum_mul]
   conv_lhs => rw [f.as_sum]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
-  rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one]
-  congr 1
-  ext j
-  by_cases hj : j = i
-  · subst hj
-    have hmi := h m hm
-    simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]
-    omega
-  · simp [Finsupp.single_eq_of_ne hj]
+  rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one, sub_single_add_single (h m hm)]
 
 private lemma isRegularSeq3_X012 :
     IsRegularSeq3 (MvPolynomial.X (0 : Fin 3) : MvPolynomial (Fin 3) ℂ)
@@ -75,12 +76,12 @@ private lemma isRegularSeq3_X012 :
     intro m hm
     by_contra h0
     have hm0 : m 0 = 0 := by omega
-    have hm1_0 : (m + Finsupp.single 1 1) 0 = 0 := by
+    have hm1_0 : (m + Finsupp.single (1 : Fin 3) 1) 0 = 0 := by
       simp [Finsupp.add_apply, Finsupp.single_apply, hm0]
-    have hL : (x * MvPolynomial.X 1).coeff (m + Finsupp.single 1 1) = x.coeff m :=
+    have hL : (x * MvPolynomial.X 1).coeff (m + Finsupp.single (1 : Fin 3) 1) = x.coeff m :=
       mem_support_of_mul_X_eq 1 m
-    have hR : (y * MvPolynomial.X 0).coeff (m + Finsupp.single 1 1) = 0 :=
-      coeff_mul_X_eq_zero_of_zero 0 (m + Finsupp.single 1 1) hm1_0
+    have hR : (y * MvPolynomial.X 0).coeff (m + Finsupp.single (1 : Fin 3) 1) = 0 :=
+      coeff_mul_X_eq_zero_of_zero 0 (m + Finsupp.single (1 : Fin 3) 1) hm1_0
     rw [hxy] at hL
     exact (MvPolynomial.mem_support_iff.mp hm) (hL.symm.trans hR)
   · intro x y z hxyz
@@ -90,13 +91,14 @@ private lemma isRegularSeq3_X012 :
       push Not at h01
       have hm0 : m 0 = 0 := by omega
       have hm1 : m 1 = 0 := by omega
-      have hm2_0 : (m + Finsupp.single 2 1) 0 = 0 := by
+      have hm2_0 : (m + Finsupp.single (2 : Fin 3) 1) 0 = 0 := by
         simp [Finsupp.add_apply, Finsupp.single_apply, hm0]
-      have hm2_1 : (m + Finsupp.single 2 1) 1 = 0 := by
+      have hm2_1 : (m + Finsupp.single (2 : Fin 3) 1) 1 = 0 := by
         simp [Finsupp.add_apply, Finsupp.single_apply, hm1]
-      have hL : (x * MvPolynomial.X 2).coeff (m + Finsupp.single 2 1) = x.coeff m :=
+      have hL : (x * MvPolynomial.X 2).coeff (m + Finsupp.single (2 : Fin 3) 1) = x.coeff m :=
         mem_support_of_mul_X_eq 2 m
-      have hR : (y * MvPolynomial.X 0 + z * MvPolynomial.X 1).coeff (m + Finsupp.single 2 1) = 0 := by
+      have hR : (y * MvPolynomial.X 0 + z * MvPolynomial.X 1).coeff
+          (m + Finsupp.single (2 : Fin 3) 1) = 0 := by
         rw [MvPolynomial.coeff_add,
           coeff_mul_X_eq_zero_of_zero 0 _ hm2_0,
           coeff_mul_X_eq_zero_of_zero 1 _ hm2_1, add_zero]
@@ -104,30 +106,20 @@ private lemma isRegularSeq3_X012 :
       exact (MvPolynomial.mem_support_iff.mp hm) (hL.symm.trans hR)
     let s0 := x.support.filter (fun m ↦ 1 ≤ m 0)
     let s1 := x.support.filter (fun m ↦ ¬ 1 ≤ m 0)
-    let u := ∑ m ∈ s0, MvPolynomial.monomial (m - Finsupp.single 0 1) (x.coeff m)
-    let v := ∑ m ∈ s1, MvPolynomial.monomial (m - Finsupp.single 1 1) (x.coeff m)
+    let u := ∑ m ∈ s0, MvPolynomial.monomial (m - Finsupp.single (0 : Fin 3) 1) (x.coeff m)
+    let v := ∑ m ∈ s1, MvPolynomial.monomial (m - Finsupp.single (1 : Fin 3) 1) (x.coeff m)
     refine ⟨u, v, ?_⟩
     have hu : u * MvPolynomial.X 0 = ∑ m ∈ s0, MvPolynomial.monomial m (x.coeff m) := by
       simp only [u, Finset.sum_mul]
       refine Finset.sum_congr rfl fun m hm ↦ ?_
-      rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one]
-      congr 1; ext j
-      by_cases hj : j = 0
-      · subst hj
-        have hmi : 1 ≤ m 0 := (Finset.mem_filter.mp hm).2
-        simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-      · simp [Finsupp.single_eq_of_ne hj]
+      have hmi : 1 ≤ m 0 := (Finset.mem_filter.mp hm).2
+      rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one, sub_single_add_single hmi]
     have hv : v * MvPolynomial.X 1 = ∑ m ∈ s1, MvPolynomial.monomial m (x.coeff m) := by
       simp only [v, Finset.sum_mul]
       refine Finset.sum_congr rfl fun m hm ↦ ?_
-      rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one]
-      congr 1; ext j
-      by_cases hj : j = 1
-      · subst hj
-        have hmem := Finset.mem_filter.mp hm
-        have hmi : 1 ≤ m 1 := (hsup m hmem.1).resolve_left hmem.2
-        simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-      · simp [Finsupp.single_eq_of_ne hj]
+      have hmem := Finset.mem_filter.mp hm
+      have hmi : 1 ≤ m 1 := (hsup m hmem.1).resolve_left hmem.2
+      rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one, sub_single_add_single hmi]
     rw [hu, hv, Finset.sum_filter_add_sum_filter_not, ← x.as_sum]
 
 /-- **Proposition 5.1(1) (Euler Kernel Surjectivity)**: Every triple `(A, B, C)` in
@@ -242,9 +234,10 @@ theorem lemma_5_3_Pm_Qm_coprime {m : ℕ} (hm : 2 ≤ m) (lam : ℂ) (hlam : lam
   · unfold fmPoly
     rw [zero_pow (by omega), zero_pow (by omega), pow_succ ((1 : ℂ) / 2) m]
     ring
-  · unfold PmVec fmDy
-    rw [zero_pow (by omega), pow_succ ((1 : ℂ) / 2) (m - 1),
-      show m - 1 + 1 = m by omega]
+  · have hhalf : ((1 : ℂ) / 2) ^ m = ((1 : ℂ) / 2) ^ (m - 1) * ((1 : ℂ) / 2) := by
+      rw [← pow_succ, show m - 1 + 1 = m by omega]
+    unfold PmVec fmDy
+    rw [zero_pow (by omega), hhalf]
     have hval : -(-((m : ℂ) * ((1 : ℂ) / 2) ^ (m - 1)) +
         2 * ((m + 1 : ℕ) : ℂ) * (((1 : ℂ) / 2) ^ (m - 1) * ((1 : ℂ) / 2))) +
         lam * 0 * (0 + 1) * (1 / 2 - (m : ℂ) / (2 * ((m + 1 : ℕ) : ℂ))) =
@@ -325,7 +318,7 @@ theorem lemma_5_3_blowup_origin {m : ℕ} (hm : 2 ≤ m) (lam x u y v : ℂ) :
     PmVec m lam (v * y) y - v * QmVec m lam (v * y) y =
       y ^ (m - 1) * ((m : ℂ) * (1 - v ^ m) +
         y * (-((m + 1 : ℕ) : ℂ) * (2 + v ^ (m + 1)) +
-          lam * v ^ (m - 1) * (2 * v + 1) / (2 * ((m + 1 : ℕ) : ℂ)))) ∧
+          lam * v ^ (m - 1) * (v + 2) / (2 * ((m + 1 : ℕ) : ℂ)))) ∧
     (∀ ζ : ℂ, ζ ^ m = 1 →
       ((m : ℂ) * (ζ⁻¹ - lam / (2 * ((m + 1 : ℕ) : ℂ)))) / (-(m : ℂ) ^ 2 * ζ⁻¹) =
         -(1 : ℂ) / (m : ℂ) + lam * ζ / (2 * (m : ℂ) * ((m + 1 : ℕ) : ℂ))) := by
