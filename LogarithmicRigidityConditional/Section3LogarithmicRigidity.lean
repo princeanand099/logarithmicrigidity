@@ -10,7 +10,7 @@ import LogarithmicRigidityConditional.ExternalLiterature
 
 Formalizes the complete proofs of:
 - **Lemma 3.1**: Inductive blow-up propagation of `η_j = h_j ω_j / f_j` along an embedded
-  log-resolution `π : X̃ → ℂℙ²`, proving `ord(h_j) ≥ 0` at every stage.
+  log-resolution `π : X̃ → ℂℙ²`, proving `ord(h_j) : ℤ` is non-decreasing and `≥ 0` at every stage.
 - **Proposition 3.2**: Global logarithmic pullback `α = π*η ∈ H⁰(X̃, Ω¹_{X̃}(log D))` is closed,
   with nonzero constant Poincaré residues satisfying `∑ λ_i deg F_i = 0`.
 - **Theorem 1.1**: Every reduced non-dicritical invariant curve `S` of degree `m + 2` of a
@@ -19,33 +19,47 @@ Formalizes the complete proofs of:
 
 namespace LogarithmicRigidityConditional
 
-/-- Cumulative holomorphic factor order along an embedded log-resolution `res` (Lemma 3.1). -/
+/-- Cumulative signed holomorphic factor order `ord(h_j) ∈ ℤ` along an embedded
+log-resolution `res` (Lemma 3.1). Using `ℤ` avoids saturating `ℕ` subtraction. -/
 def cumulativeOrder {F : ProjectiveFoliation} {S : ReducedCurve}
-    (res : EmbeddedLogResolution F S) : Fin (res.N + 1) → ℕ
+    (res : EmbeddedLogResolution F S) : Fin (res.N + 1) → ℤ
   | ⟨0, _⟩ => 0
   | ⟨j + 1, hj⟩ =>
       cumulativeOrder res ⟨j, Nat.lt_of_succ_lt hj⟩ +
-        ((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuF + 1 -
-          (res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuC)
+        (((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuF : ℤ) + 1 -
+          ((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuC : ℤ))
 
 /-- **Lemma 3.1**: Along every stage `j` of an embedded log-resolution `res` of a reduced
 non-dicritical invariant curve `S`, the blow-up multiplicity inequality
-`ν_p(C_{j-1}) ≤ ν_p(ℱ_{j-1}) + 1` holds and the cumulative holomorphic factor order
-`ord(h_j)` is non-decreasing and non-negative. -/
+`ν_p(C_{j-1}) ≤ ν_p(ℱ_{j-1}) + 1` holds and the signed cumulative order
+`ord(h_j) ∈ ℤ` is non-decreasing and non-negative (`0 ≤ ord(h_j)`). -/
 theorem lemma_3_1_blowup_propagation {F : ProjectiveFoliation} {S : ReducedCurve}
     (res : EmbeddedLogResolution F S) :
     (∀ j : Fin res.N, (res.steps j).nuC ≤ (res.steps j).nuF + 1) ∧
     (∀ j : Fin res.N,
-      cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩) := by
+      cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩) ∧
+    (∀ j : Fin (res.N + 1), 0 ≤ cumulativeOrder res j) := by
   have hstep : ∀ j : Fin res.N, (res.steps j).nuC ≤ (res.steps j).nuF + 1 := by
     intro j
     rcases (res.steps j).isRegularOrNonDicritical with ⟨hF0, hC1⟩ | hnd
     · omega
     · exact carnicer_local_inequality _ _ hnd
-  refine ⟨hstep, ?_⟩
-  intro j
-  simp only [cumulativeOrder]
-  exact Nat.le_add_right _ _
+  have hmono : ∀ j : Fin res.N,
+      cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩ := by
+    intro j
+    have hj := hstep j
+    simp only [cumulativeOrder]
+    omega
+  have hnonneg : ∀ j : Fin (res.N + 1), 0 ≤ cumulativeOrder res j := by
+    intro ⟨k, hk⟩
+    induction k with
+    | zero => simp [cumulativeOrder]
+    | succ k ih =>
+      have hk_prev : k < res.N + 1 := by omega
+      have h0 := ih hk_prev
+      have h1 := hmono ⟨k, by omega⟩
+      exact le_trans h0 h1
+  exact ⟨hstep, hmono, hnonneg⟩
 
 /-- **Proposition 3.2**: For a saturated degree-`m` foliation `ℱ` and a reduced non-dicritical
 invariant curve `S` of degree `m + 2`, the pullback `α = π*η` is logarithmic and closed, and

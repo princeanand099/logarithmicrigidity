@@ -64,6 +64,13 @@ theorem prop_5_1_euler_homogeneous (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
     ∑ i : Fin 3, MvPolynomial.X i * MvPolynomial.pderiv i F = (d : MvPolynomial (Fin 3) ℂ) * F := by
   sorry
 
+/-- **Proposition 5.1(1) (Euler Kernel Surjectivity)**: Every triple `(A, B, C)` in
+`ℂ[X, Y, Z]³` satisfying `X A + Y B + Z C = 0` is of the form `formOfSyzygy V₁ V₂ V₃`. -/
+theorem prop_5_1_euler_kernel_surj (A B C : MvPolynomial (Fin 3) ℂ)
+    (heul : MvPolynomial.X 0 * A + MvPolynomial.X 1 * B + MvPolynomial.X 2 * C = 0) :
+    ∃ V₁ V₂ V₃ : MvPolynomial (Fin 3) ℂ, formOfSyzygy V₁ V₂ V₃ = (A, B, C) := by
+  sorry
+
 /-- **Proposition 5.1(1)**: Exact algebraic correspondence between invariant 1-forms
 `ω = i_V i_E Ω` (`i_E ω = 0`, `ω ∧ dF ≡ 0 (mod F)`) and Jacobian syzygies `Syz(J_F)`. -/
 theorem prop_5_1_syzygy_correspondence (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
@@ -156,6 +163,19 @@ theorem lemma_5_2_Linf_smooth {m : ℕ} (hm : 2 ≤ m) (X Y : ℂ)
     X = 0 ∧ Y = 0 := by
   sorry
 
+/-- **Lemma 5.2 (Birational Surjectivity of Parametrization)**. -/
+theorem lemma_5_2_param_surjective {m : ℕ} (hm : 2 ≤ m) (x y : ℂ)
+    (hxy : x ≠ 0 ∨ y ≠ 0) (hf : fmPoly m x y = 0) :
+    (x = 0 ∧ y = 1 / 2) ∨
+    (∃ t : ℂ, 1 + 2 * t ^ (m + 1) ≠ 0 ∧ x = xParam m t ∧ y = yParam m t) := by
+  sorry
+
+/-- **Lemma 5.2 (Coprimality Core of Irreducibility of `F_m`)**. -/
+theorem lemma_5_2_Fm_no_common_root_Linf {m : ℕ} (hm : 2 ≤ m) (X Y : ℂ)
+    (h1 : X ^ m - Y ^ m = 0) (h2 : X ^ (m + 1) + 2 * Y ^ (m + 1) = 0) :
+    X = 0 ∧ Y = 0 := by
+  sorry
+
 /-- **Lemma 5.3**: Exact cofactor identity and origin non-dicriticality of `ℱ_m(λ)` for
 every `m ≥ 2` and `λ ∈ (0, 2(m + 1))`. -/
 theorem lemma_5_3_foliation_Fm_cofactor_origin {m : ℕ} (hm : 2 ≤ m) :
@@ -174,6 +194,32 @@ theorem lemma_5_3_Linf_disjoint {m : ℕ} (hm : 2 ≤ m) (lam X Y : ℂ)
     lam * X ^ (m - 1) * Y ≠ 0 := by
   sorry
 
+/-- **Lemma 5.3 (Saturation / Coprimality Witnesses)**. -/
+theorem lemma_5_3_Pm_Qm_coprime {m : ℕ} (hm : 2 ≤ m) (lam : ℂ) (hlam : lam ≠ 0) :
+    (fmPoly m 0 (1 / 2) = 0 ∧ PmVec m lam 0 (1 / 2) ≠ 0) ∧
+    (PmVec m lam (-(m : ℂ) / ((m + 1 : ℕ) : ℂ)) 0 ≠ 0) ∧
+    (∃ x : ℂ, QmVec m lam x ((m : ℂ) / (2 * ((m + 1 : ℕ) : ℂ))) ≠ 0) := by
+  sorry
+
+/-- **Lemma 5.3 (Exact Blow-Up at Origin `(0, 0)`)**. -/
+theorem lemma_5_3_blowup_origin {m : ℕ} (hm : 2 ≤ m) (lam x u y v : ℂ) :
+    PmVec m lam x (u * x) =
+      x ^ (m - 1) * ((m : ℂ) * (u ^ (m - 1) - lam / (2 * ((m + 1 : ℕ) : ℂ))) +
+        x * (-2 * ((m + 1 : ℕ) : ℂ) * u ^ m +
+          lam * (u * x + u - (m : ℂ) / (2 * ((m + 1 : ℕ) : ℂ))))) ∧
+    QmVec m lam x (u * x) - u * PmVec m lam x (u * x) =
+      x ^ (m - 1) * ((m : ℂ) * (1 - u ^ m) +
+        x * (((m + 1 : ℕ) : ℂ) * (1 + 2 * u ^ (m + 1)) -
+          lam * u * (2 * u + 1) / (2 * ((m + 1 : ℕ) : ℂ)))) ∧
+    PmVec m lam (v * y) y - v * QmVec m lam (v * y) y =
+      y ^ (m - 1) * ((m : ℂ) * (1 - v ^ m) +
+        y * (-((m + 1 : ℕ) : ℂ) * (2 + v ^ (m + 1)) +
+          lam * v ^ (m - 1) * (2 * v + 1) / (2 * ((m + 1 : ℕ) : ℂ)))) ∧
+    (∀ ζ : ℂ, ζ ^ m = 1 →
+      ((m : ℂ) * (ζ⁻¹ - lam / (2 * ((m + 1 : ℕ) : ℂ)))) / (-(m : ℂ) ^ 2 * ζ⁻¹) =
+        -(1 : ℂ) / (m : ℂ) + lam * ζ / (2 * (m : ℂ) * ((m + 1 : ℕ) : ℂ))) := by
+  sorry
+
 /-- **Proposition 5.4 (Parametrization Factorization)**: Exact factorization of `P_m` and `Q_m`
 along `(x(t), y(t))` in terms of `g_m(t; λ)`. -/
 theorem prop_5_4_param_factorization {m : ℕ} (hm : 2 ≤ m) (lam t : ℂ)
@@ -184,6 +230,26 @@ theorem prop_5_4_param_factorization {m : ℕ} (hm : 2 ≤ m) (lam t : ℂ)
     QmVec m lam (xParam m t) (yParam m t) =
       (xParam m t) ^ (m - 2) * (xParam m t + (m : ℂ) / ((m + 1 : ℕ) : ℂ)) *
         (xParam m t / (2 * (1 + 2 * t ^ (m + 1)))) * gmPoly m lam t := by
+  sorry
+
+/-- **Proposition 5.4 (Exact Divergence, Cofactor, and Linear `λ`-Coefficient Link)**. -/
+theorem prop_5_4_div_and_asymp {m : ℕ} (hm : 2 ≤ m) (x w lam ω : ℂ)
+    (hlam : lam ≠ 0) (hω : ω ≠ 0) (h2ω : 2 * ω + 1 ≠ 0) (hωm : ω ^ m - 1 ≠ 0) :
+    divYm m x (w * x) =
+      x ^ (m - 2) * (((m : ℂ) + 2) * w * x ^ 2 +
+        (((m : ℂ) - 1 + 2 * (m : ℂ) / ((m + 1 : ℕ) : ℂ)) * w -
+          ((m : ℂ) ^ 2 + (m : ℂ) + 1) / (2 * ((m + 1 : ℕ) : ℂ))) * x -
+        (m : ℂ) ^ 2 / (2 * ((m + 1 : ℕ) : ℂ))) ∧
+    KmTilde m x (w * x) =
+      x ^ (m - 2) * (((m + 1 : ℕ) : ℂ) * w * x ^ 2 +
+        ((m : ℂ) * w - (m : ℂ) / 2) * x -
+        (m : ℂ) ^ 2 / (2 * ((m + 1 : ℕ) : ℂ))) ∧
+    ((m + 1 : ℕ) : ℂ) * divYm m x (w * x) - ((m + 2 : ℕ) : ℂ) * KmTilde m x (w * x) =
+      x ^ (m - 2) * ((((m : ℂ) - 1) / 2 - w) * x + (m : ℂ) ^ 2 / (2 * ((m + 1 : ℕ) : ℂ))) ∧
+    ((((m : ℂ) - 1) / 2 - ω) /
+      (((m + 1 : ℕ) : ℂ) ^ 2 * ω *
+        (2 * ((m + 1 : ℕ) : ℂ) * (ω ^ m - 1) / (lam * ω * (2 * ω + 1)))) =
+      lam * rhoLinearCoeff m ω) := by
   sorry
 
 /-- **Proposition 5.4 & Theorem 1.3(2)**: Nonvanishing of the linear `λ`-coefficient of `ρ_j(λ)`
@@ -204,6 +270,25 @@ theorem lemma_6_1_quartic_geometry :
     (∃ ystar : ℝ, 0 < ystar ∧ ystar < 1 ∧ quarticF 1 ystar = 0) := by
   sorry
 
+/-- **Lemma 6.1 (`L_∞` Smoothness)**. -/
+theorem quartic_Linf_smooth (X Y : ℂ)
+    (h0 : quarticF4 X Y = 0)
+    (hdx : 4 * X * (2 * X ^ 2 - Y ^ 2) = 0)
+    (hdy : 4 * Y * (2 * Y ^ 2 - X ^ 2) = 0) :
+    X = 0 ∧ Y = 0 := by
+  sorry
+
+/-- **Lemma 6.1 (Compactness)**: The real locus `C(ℝ) = {(x, y) ∈ ℝ² | f(x, y) = 0}` is compact. -/
+theorem quartic_real_compact : IsCompact {p : ℝ × ℝ | quarticF p.1 p.2 = 0} := by
+  sorry
+
+/-- **Lemma 6.1 (Real Smoothness & Sign Witnesses)**. -/
+theorem quartic_real_smooth_and_sign :
+    (∀ x y : ℝ, quarticF x y = 0 → quarticFx x y ≠ 0 ∨ quarticFy x y ≠ 0) ∧
+    quarticF (-1 : ℝ) 0 < 0 ∧
+    quarticF (1 : ℝ) 0 < 0 := by
+  sorry
+
 /-- **Lemma 6.1 (Hessian Determinants)**: Both singularities `(0, ±i)` are ordinary nodes
 with nonzero Hessian determinants `192 ∓ 32i`. -/
 theorem quartic_hessian_nodes :
@@ -216,11 +301,17 @@ theorem quartic_hessian_nodes :
     (fxx 0 (-Complex.I) * fyy 0 (-Complex.I) - fxy 0 (-Complex.I) ^ 2 ≠ 0) := by
   sorry
 
-/-- **Proposition 6.2 (`L_∞`)**: `Sing(ℱ) ∩ L_∞ = ∅`. -/
+/-- **Proposition 6.2 (`L_∞`)**: `Sing(ℱ) ∩ L_∞ = ∅` via exact `InducedOneForm` at `Z = 0`. -/
 theorem sing_Linf_empty (X Y : ℂ) (hXY : X ≠ 0 ∨ Y ≠ 0) :
-    ¬ (48 * Y ^ 4 = 0 ∧ -(48 * X * Y ^ 3) = 0 ∧
-      Y * (8 * X ^ 3 + 172 * X ^ 2 * Y + 48 * X * Y ^ 3 - 312 * Y ^ 3) -
-      X * (320 * X ^ 3 + 16 * X ^ 2 * Y - 144 * X * Y ^ 2 + 48 * Y ^ 4) = 0) := by
+    ¬ ((counterexampleLinfForm X Y).A = 0 ∧
+       (counterexampleLinfForm X Y).B = 0 ∧
+       (counterexampleLinfForm X Y).C = 0) := by
+  sorry
+
+/-- **Proposition 6.2 (Saturation / Coprimality Certificate)**. -/
+theorem counterexample_saturation_cert :
+    (∀ x₀ : ℂ, ¬ (∀ y : ℂ, vecP x₀ y = 0 ∧ vecQ x₀ y = 0)) ∧
+    (counterexampleLinfForm (0 : ℂ) 1).A ≠ 0 := by
   sorry
 
 /-- **Proposition 6.2 (Elimination)**: Every complex affine singularity `(x, y)` of `(P, Q)`

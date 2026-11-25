@@ -20,7 +20,8 @@ import LogarithmicRigidityConditional.Section5DegreeMPlusOne
 Formalizes the complete proofs of:
 - **Theorem 1.4(1)**: Full 4-case proof of the sharpened upper bounds for `r ≢ 0`
   (`0` for `m = 1`, `1` for `m = 2`, `2` for `m = 3`, and `m(m-1)/2 - 1 + a_{m+1}` for `m ≥ 4`),
-  including the `m = 3` real-cusp `A₂` unibranch analysis.
+  with the `m = 3` real-cusp `A₂` unibranch analysis proved from `lemma_m3_nondicritical_delta_tau`,
+  `plane_curve_delta_one_cusp_classification`, and `harnack_singular_irred_bound`.
 - **Theorem 1.4(2)**: Complete certification of the explicit degree-3 counterexample (6.2) on
   the 2-nodal quartic (6.1) strictly exceeding `H_nodal(3) = 1`.
 -/
@@ -88,9 +89,11 @@ theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (hm : 1 ≤ m)
           have hd_eq : d = m + 1 := by simpa [hlist] using hsum_m1
           have hlist_m1 : S.realAffineDegs = [m + 1] := by rw [hlist, hd_eq]
           obtain ⟨hirred_alg, hirred_real⟩ := hirred_case hnr hlist_m1
-          have hdimca := dimca_serre_duality_syzygy_defect F S_alg m delta tau hm hF_deg
-            hirred_alg hnd
-          have hdelta_ge1 : 1 ≤ delta := hdimca.1
+          have hdelta_ge1 : 1 ≤ delta := by
+            by_contra hlt
+            have h0 : delta = 0 := by omega
+            exact theorem_1_3_part1_smooth_nonexistence F S_alg m delta tau hm hF_deg
+              hirred_alg h0 hnd
           have hsing := harnack_singular_irred_bound S (m + 1) delta tau numLimitCycles
             (by omega) hirred_real hlc
           match m with
@@ -105,7 +108,8 @@ theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (hm : 1 ≤ m)
             simp only [rNonZeroBound]
             omega
           | 3 =>
-            have htau_ge2 : 2 ≤ tau := hdimca.2 rfl
+            have htau_ge2 : 2 ≤ tau :=
+              (lemma_m3_nondicritical_delta_tau F S_alg delta tau hF_deg hirred_alg hnd).2
             by_cases hdelta2 : 2 ≤ delta
             · have hbound := hsing.1
               have ha4 : aVal (3 + 1) = 1 := by decide
@@ -113,8 +117,14 @@ theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (hm : 1 ≤ m)
               simp only [rNonZeroBound]
               omega
             · have hdelta1 : delta = 1 := by omega
-              have hcusp : numLimitCycles ≤ 2 := hsing.2 rfl hdelta1 htau_ge2
-              simpa [rNonZeroBound] using hcusp
+              subst hdelta1
+              have huni : HasRealUnibranchSingularity S :=
+                plane_curve_delta_one_cusp_classification S 4 tau (by omega) hirred_real htau_ge2
+              have hcusp := hsing.2 huni
+              have ha4 : aVal (3 + 1) = 1 := by decide
+              rw [ha4] at hcusp
+              simp only [rNonZeroBound]
+              omega
           | k + 4 =>
             have hbound := hsing.1
             have hsub1 : k + 4 + 1 - 1 = k + 4 := by omega

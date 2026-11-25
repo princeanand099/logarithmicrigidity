@@ -175,7 +175,7 @@ axiom log_order_nonneg_implies_logarithmic {F : ProjectiveFoliation} {S : Reduce
     (hord : ∀ j : Fin res.N, (res.steps j).nuC ≤ (res.steps j).nuF + 1) :
     PullbackIsLogarithmic res
 
-/-! ## Axioms 7–10: Planar Limit Cycles, Harnack (1876), GLV (1996), Christopher (2001) -/
+/-! ## Axioms 7–10: Planar Limit Cycles, GLV (1996), IFT, Harnack (1876), Christopher (2001) -/
 
 /-- Decomposition of a real reduced algebraic curve `S = {F = 0} ⊂ ℂℙ²` into real affine
 irreducible components, optional line at infinity `L_∞`, and conjugate pairs `{G, Ḡ}` of
@@ -206,21 +206,50 @@ opaque IsIrreducibleCurveInvariants (S_alg : ReducedCurve) (d delta tau : ℕ) :
 total `δ`-invariant `delta` and total Tjurina number `tau`. -/
 opaque IsIrreducibleRealCurveInvariants (S : RealCurveDecomposition) (d delta tau : ℕ) : Prop
 
-/-- **External Axiom 7 (Giacomini–Llibre–Viano 1996, *Nonlinearity* 9 + Implicit Function Theorem)**:
-A real planar polynomial vector field whose projective foliation is logarithmic on `S_alg`
-(with real decomposition `S`) and possesses at least one algebraic limit cycle cannot be
-purely real (`S.nonRealPairDegs ≠ []`): by Giacomini–Llibre–Viano [14], any limit cycle `γ`
-lies in some real component `{f₁ = 0}`, where `ũ = f₁ ∏ |f_i|^{λ_i/λ₁}` is constant along
-orbits (proved unconditionally in `LogarithmicRigidity.prop_4_1_local_first_integral_const`)
-with `∇ũ|_γ ≠ 0`, producing a period annulus by the Implicit Function Theorem. -/
-axiom glv_and_ift_no_purely_real_logarithmic_limit_cycle
+/-- Predicate asserting `S` carries a real unibranch singularity (such as a real cusp `A₂`)
+whose preimage in the normalization `C̃(ℝ)` lies on one connected component. -/
+opaque HasRealUnibranchSingularity (S : RealCurveDecomposition) : Prop
+
+/-- Predicate asserting `(f₁, f)` are the `C¹` component evaluations along an isolated periodic
+orbit `γ ⊂ {f₁ = 0}` of a purely real logarithmic vector field with `∇f₁|_γ ≠ 0` and
+`f_i|_γ ≠ 0`, so constancy of `ũ = f₁ ∏ |f_i|^{λ_i/λ₁}` along orbits yields a period annulus. -/
+opaque IsIsolatedPeriodicOrbitLocalFirstIntegral {n : ℕ}
+    (lam₁ : ℝ) (lam : Fin n → ℝ) (f₁ : ℝ → ℝ) (f : Fin n → ℝ → ℝ) : Prop
+
+/-- **External Axiom 7a (Giacomini–Llibre–Viano 1996, *Nonlinearity* 9, 501–516)**:
+For a purely real logarithmic foliation (`S.nonRealPairDegs = []`) possessing a limit cycle,
+the limit cycle `γ` lies in `{f = 0}` (on some real component `f₁ = 0` disjoint from all
+other components `f_i` and all singularities) and satisfies the real logarithmic differential
+identity along orbits in a tubular neighborhood. -/
+axiom giacomini_llibre_viano_limit_cycle_orbit
     (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition)
     (numLimitCycles : ℕ)
     (hreal : RealDecompositionOf S_alg S)
     (hlog : ∃ lam, FormEqualsLogarithmicSum F S_alg lam ∧ IsLogarithmicFoliation F S_alg lam)
     (hlc : HasAlgebraicLimitCycles S numLimitCycles)
-    (hpos : 0 < numLimitCycles) :
-    S.nonRealPairDegs ≠ []
+    (hpos : 0 < numLimitCycles)
+    (hreal_only : S.nonRealPairDegs = []) :
+    ∃ (n : ℕ) (lam₁ : ℝ) (lam : Fin n → ℝ) (f₁ f₁' : ℝ → ℝ) (f f' : Fin n → ℝ → ℝ),
+      lam₁ ≠ 0 ∧
+      (∀ t : ℝ, HasDerivAt f₁ (f₁' t) t) ∧
+      (∀ i : Fin n, ∀ t : ℝ, HasDerivAt (f i) (f' i t) t) ∧
+      (∀ i : Fin n, ∀ t : ℝ, f i t ≠ 0) ∧
+      (∀ t : ℝ,
+        lam₁ * (∏ j : Fin n, f j t) * f₁' t +
+        ∑ i : Fin n, lam i * f₁ t * (∏ j ∈ Finset.univ.erase i, f j t) * f' i t = 0) ∧
+      IsIsolatedPeriodicOrbitLocalFirstIntegral lam₁ lam f₁ f
+
+/-- **External Axiom 7b (Implicit Function Theorem — Period Annulus Obstruction)**:
+If `ũ(t) = f₁(t) ∏ |f_i(t)|^{λ_i/λ₁}` is constant along orbits in a tubular neighborhood of an
+isolated periodic orbit `γ ⊂ {f₁ = 0}` with `∇ũ|_γ ≠ 0`, then the nearby level sets `{ũ = ε}`
+are periodic orbits accumulating on `γ`, contradicting the isolation of `γ`. -/
+axiom ift_local_first_integral_contradicts_isolation {n : ℕ}
+    (lam₁ : ℝ) (lam : Fin n → ℝ) (f₁ : ℝ → ℝ) (f : Fin n → ℝ → ℝ)
+    (hiso : IsIsolatedPeriodicOrbitLocalFirstIntegral lam₁ lam f₁ f)
+    (hconst : ∀ t : ℝ,
+      f₁ t * (∏ i : Fin n, |f i t| ^ (lam i / lam₁)) =
+      f₁ 0 * (∏ i : Fin n, |f i 0| ^ (lam i / lam₁))) :
+    False
 
 /-- **External Axiom 8 (Harnack 1876, *Math. Ann.* 10 + Normalization Genus–`δ` Formula)**:
 For any real reduced curve `S` with real affine irreducible component degrees `d_1, ..., d_s`,
@@ -230,23 +259,35 @@ axiom harnack_total_oval_bound (S : RealCurveDecomposition) (numLimitCycles : �
     (hlc : HasAlgebraicLimitCycles S numLimitCycles) :
     numLimitCycles ≤ (S.realAffineDegs.map hBound).sum
 
-/-- **External Axiom 9 (Harnack 1876 + Normalization for Singular Irreducible Curves)**:
+/-- **External Axiom 9a (Harnack 1876 + Normalization for Singular Irreducible Curves)**:
 An irreducible real algebraic curve `S` of degree `d ≥ 1` with total `δ`-invariant `delta`
-and total Tjurina number `tau` carries at most `(d - 1)(d - 2)/2 - delta + a_d` algebraic
-limit cycles; if `d = 4`, `delta = 1`, and `tau ≥ 2` (a real unibranch cusp `A₂`), that
-singular component occupies one connected component of `C̃(ℝ)`, leaving at most `2` smooth ovals. -/
+carries at most `(d - 1)(d - 2)/2 - delta + a_d` smooth ovals; if `S` has a real unibranch
+singularity, its preimage occupies one connected component of `C̃(ℝ)`, leaving at most
+`(d - 1)(d - 2)/2 - delta + a_d - 1` smooth ovals. -/
 axiom harnack_singular_irred_bound (S : RealCurveDecomposition)
     (d delta tau numLimitCycles : ℕ) (hd : 1 ≤ d)
     (hirred : IsIrreducibleRealCurveInvariants S d delta tau)
     (hlc : HasAlgebraicLimitCycles S numLimitCycles) :
     (numLimitCycles ≤ (d - 1) * (d - 2) / 2 - delta + aVal d) ∧
-    (d = 4 → delta = 1 → 2 ≤ tau → numLimitCycles ≤ 2)
+    (HasRealUnibranchSingularity S →
+      numLimitCycles ≤ (d - 1) * (d - 2) / 2 - delta + aVal d - 1)
+
+/-- **External Axiom 9b (Classical Plane Curve Singularity Classification for `δ = 1`)**:
+A real irreducible plane curve with total `δ`-invariant `1` has a unique singular point `p`
+(hence real, as non-real singularities occur in conjugate pairs) of multiplicity `2`, which is
+either an ordinary node `A₁` (`τ = 1`) or an ordinary unibranch cusp `A₂` (`τ = 2`).
+Thus `δ = 1` and `τ ≥ 2` imply `S` has a real unibranch singularity. -/
+axiom plane_curve_delta_one_cusp_classification (S : RealCurveDecomposition)
+    (d tau : ℕ) (hd : 1 ≤ d)
+    (hirred : IsIrreducibleRealCurveInvariants S d 1 tau)
+    (htau : 2 ≤ tau) :
+    HasRealUnibranchSingularity S
 
 /-- **External Axiom 10 (Christopher 2001, *Geom. Dedicata* 88 + Harnack M-Curve Existence)**:
-For every `m ≥ 2`, there exists a standard degree-`m` planar polynomial system (`r ≡ 0`,
-so `L_∞` is invariant) with only nodal (hence non-dicritical) invariant curves and exactly
-`H_nodal(m)` hyperbolic algebraic limit cycles. -/
-axiom christopher_sharpness_construction (m : ℕ) (hm : 2 ≤ m) :
+For every `m ≥ 1`, there exists a standard degree-`m` planar polynomial system (`r ≡ 0`,
+`L_∞` invariant) with only nodal (hence non-dicritical) invariant curves and exactly
+`H_nodal(m)` algebraic limit cycles (`ẋ = x, ẏ = -y` for `m = 1`; Christopher [8] for `m ≥ 2`). -/
+axiom christopher_sharpness_construction (m : ℕ) (hm : 1 ≤ m) :
     ∃ (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition),
       F.deg = m ∧ F.isSaturated ∧ IsNonDicriticalInvariant F S_alg ∧
       RealDecompositionOf S_alg S ∧ S_alg.totalDeg = S.totalDeg ∧
@@ -266,25 +307,47 @@ axiom camacho_lins_neto_sad_nondicritical (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ �
     (hrat : ∀ q : ℚ, 0 < q → μ₁ / μ₂ ≠ (q : ℂ)) :
     SingularityIsNonDicritical μ₁ μ₂
 
-/-- **External Axiom 12 (Dimca 2013, *Bull. Math. Soc. Sci. Math. Roumanie* 56(104), Thm. 3.1 /
+/-- Dimension `dim_ℂ V_m(F) = dim_ℂ Syz(J_F)_{d-1}` of degree-`m` foliations preserving `S_alg`. -/
+opaque syzygyDim (S_alg : ReducedCurve) (m : ℕ) : ℕ
+
+/-- Cohomology defect `h¹(ℙ², ℐ_Z(d - 4))` of the Tjurina subscheme `Z` of `S_alg`. -/
+opaque tjurinaH1Defect (S_alg : ReducedCurve) (d : ℕ) : ℕ
+
+/-- **External Axiom 12a (Dimca 2013, *Bull. Math. Soc. Sci. Math. Roumanie* 56(104), Thm. 3.1 /
 Serre Duality on `ℙ²`)**:
-For a reduced irreducible plane curve `S_alg` of degree `d = m + 1` (`m ≥ 1`) with total
-`δ`-invariant `delta` and total Tjurina number `tau`, if `S_alg` is a non-dicritical
-invariant curve of a degree-`m` foliation `ℱ`, then `S_alg` cannot be smooth (`1 ≤ delta`),
-and when `m = 3` (`d = 4`), `h¹(ℙ², ℐ_Z(0)) = tau - 1 > 0` forces `2 ≤ tau`. -/
-axiom dimca_serre_duality_syzygy_defect (F : ProjectiveFoliation) (S_alg : ReducedCurve)
+For an irreducible plane curve `S_alg` of degree `d = m + 1` (`m ≥ 1`),
+`dim_ℂ V_m(F) = 3 + h¹(ℙ², ℐ_Z(d - 4))`; the defect vanishes when `S_alg` is smooth (`δ = 0`),
+and equals `τ - 1` when `d = 4` (`m = 3`) and `δ ≥ 1`. -/
+axiom dimca_syzygy_defect_formula (S_alg : ReducedCurve) (m delta tau : ℕ) (hm : 1 ≤ m)
+    (hirred : IsIrreducibleCurveInvariants S_alg (m + 1) delta tau) :
+    syzygyDim S_alg m = 3 + tjurinaH1Defect S_alg (m + 1) ∧
+    (delta = 0 → tjurinaH1Defect S_alg (m + 1) = 0) ∧
+    (m = 3 → 1 ≤ delta → tjurinaH1Defect S_alg 4 = tau - 1)
+
+/-- **External Axiom 12b (Dicriticality of Koszul Pencil Subspace / Bézout on `ℂℙ²`)**:
+Whenever `dim_ℂ V_m(F) = 3`, every degree-`m` foliation preserving `S_alg` lies in the
+3-dimensional Koszul pencil subspace `{ω_L = L dF - d F dL}` (algebraically characterized in
+`LogarithmicRigidity.prop_5_1_koszul_pencil_forms` and `theorem_1_3_part1_koszul_rigidity`),
+admits the rational first integral `F / L^d`, and is dicritical at `C ∩ {L = 0} ≠ ∅`. -/
+axiom koszul_subspace_dicritical (F : ProjectiveFoliation) (S_alg : ReducedCurve)
     (m delta tau : ℕ) (hm : 1 ≤ m) (hF_deg : F.deg = m)
     (hirred : IsIrreducibleCurveInvariants S_alg (m + 1) delta tau)
-    (hnd : IsNonDicriticalInvariant F S_alg) :
-    1 ≤ delta ∧ (m = 3 → 2 ≤ tau)
+    (hdim3 : syzygyDim S_alg m = 3) :
+    ¬ IsNonDicriticalInvariant F S_alg
+
+/-- Predicate asserting that every smooth singularity `p_j(λ)` of `ℱ_m(λ)` on `C_m \ {(0, 0)}`
+is non-degenerate with eigenvalue ratio `ρ_j(λ) ∉ ℚ_{>0}` (hence non-dicritical). -/
+opaque IsSmoothSingNonDicriticalOnCm (m : ℕ) (lam : ℝ) : Prop
 
 /-- **External Axiom 13 (Analytic Implicit Function Theorem & Identity Theorem for Prop. 5.4)**:
-For every `m ≥ 2`, if `rhoLinearCoeff m ω ≠ 0` for every root `ω` of `2 ω^{m+1} + 1 = 0`
-(proved unconditionally in `LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2`), then there
-exists `ε_m ∈ (0, 2(m + 1))` such that the resonant set `E_m ⊂ (0, ε_m)` where any smooth
-singularity of `ℱ_m(λ)` on `C_m \ {(0, 0)}` has eigenvalue ratio in `ℚ_{>0}` is countable. -/
+For every `m ≥ 2`, since `rhoLinearCoeff m ω ≠ 0` at every root `ω` of `2 ω^{m+1} + 1 = 0`
+(proved unconditionally in `LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2` and linked to
+`div(𝒴_m)` and `K̃_m` in `prop_5_4_div_and_asymp`), there exists `ε_m ∈ (0, 2(m + 1))` and a
+countable resonant set `E_m ⊂ ℝ` such that every `λ ∈ (0, ε_m) \ E_m` satisfies
+`IsSmoothSingNonDicriticalOnCm m lam`. -/
 axiom analytic_perturbation_countable_resonances (m : ℕ) (hm : 2 ≤ m)
     (hcoeff : ∀ ω : ℂ, 2 * ω ^ (m + 1) + 1 = 0 → rhoLinearCoeff m ω ≠ 0) :
-    ∃ (ε : ℝ) (E : Set ℝ), 0 < ε ∧ ε < 2 * ((m + 1 : ℕ) : ℝ) ∧ E.Countable
+    ∃ (ε : ℝ) (E : Set ℝ), 0 < ε ∧ ε < 2 * ((m + 1 : ℕ) : ℝ) ∧ E.Countable ∧
+      (∀ lam ∈ Set.Ioo (0 : ℝ) ε, lam ∉ E → IsSmoothSingNonDicriticalOnCm m lam)
 
 end LogarithmicRigidityConditional

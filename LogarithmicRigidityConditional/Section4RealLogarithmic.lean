@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Prince Anand
 -/
 import LogarithmicRigidity.Preliminaries
+import LogarithmicRigidity.RealLogarithmicCalculus
 import LogarithmicRigidityConditional.Section3LogarithmicRigidity
 
 /-!
@@ -11,18 +12,21 @@ import LogarithmicRigidityConditional.Section3LogarithmicRigidity
 
 Formalizes the complete proofs of:
 - **Proposition 4.1**: Any real logarithmic foliation possessing a limit cycle must contain a
-  complex-conjugate pair `{G, Ḡ}` of non-real irreducible factors, lowering the total degree
-  of real affine irreducible components by at least `2` (or `3` if `L_∞ ⊂ S`).
+  complex-conjugate pair `{G, Ḡ}` of non-real irreducible factors, proved by combining
+  Giacomini–Llibre–Viano (1996), the unconditional `C¹` local first-integral constancy proof
+  `LogarithmicRigidity.prop_4_1_local_first_integral_const`, and the Implicit Function Theorem.
 - **Theorem 1.2**: Every standard planar polynomial system (`r ≡ 0`) of affine degree `m ≥ 1`
   with non-dicritical invariant curves has at most `H_nodal(m)` algebraic limit cycles, and
-  this bound is sharp for every `m ≥ 2` (and trivially `H_nodal(1) = 0` for `m = 1`).
+  this bound is sharp for every `m ≥ 1`.
 -/
 
 namespace LogarithmicRigidityConditional
 
 open LogarithmicRigidity
 
-/-- **Proposition 4.1**: Real-logarithmic center obstruction and real-affine degree reduction. -/
+/-- **Proposition 4.1**: Real-logarithmic center obstruction and real-affine degree reduction.
+Directly invokes `LogarithmicRigidity.prop_4_1_local_first_integral_const` to prove that a
+purely real logarithmic foliation forces constancy of `ũ = f₁ ∏ |f_i|^{λ_i/λ₁}` along orbits. -/
 theorem prop_4_1_real_logarithmic_obstruction
     (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition)
     (numLimitCycles : ℕ)
@@ -33,8 +37,14 @@ theorem prop_4_1_real_logarithmic_obstruction
     S.nonRealPairDegs ≠ [] ∧
     (S.hasLineAtInfinity = false → S.realAffineDegs.sum + 2 ≤ S.totalDeg) ∧
     (S.hasLineAtInfinity = true → S.realAffineDegs.sum + 3 ≤ S.totalDeg) := by
-  have hne : S.nonRealPairDegs ≠ [] :=
-    glv_and_ift_no_purely_real_logarithmic_limit_cycle F S_alg S numLimitCycles hreal hlog hlc hpos
+  have hne : S.nonRealPairDegs ≠ [] := by
+    intro hreal_only
+    obtain ⟨n, lam₁, lam, f₁, f₁', f, f', hlam₁, hf₁, hf, hne_f, hlog_ode, hiso⟩ :=
+      giacomini_llibre_viano_limit_cycle_orbit F S_alg S numLimitCycles hreal hlog hlc hpos
+        hreal_only
+    have hconst := prop_4_1_local_first_integral_const (Finset.univ : Finset (Fin n))
+      lam₁ hlam₁ lam f₁ f₁' f f' hf₁ (fun i _ t ↦ hf i t) (fun i _ t ↦ hne_f i t) hlog_ode
+    exact ift_local_first_integral_contradicts_isolation lam₁ lam f₁ f hiso hconst
   have hnr_pos : 1 ≤ S.nonRealPairDegs.sum := by
     rcases List.exists_cons_of_ne_nil hne with ⟨d, rest, hcons⟩
     have hd : 0 < d := S.nonRealPairDegs_pos d (by simp [hcons])
@@ -112,10 +122,10 @@ theorem theorem_1_2_standard_upper_bound {m : ℕ} (hm : 1 ≤ m)
           omega
         exact hfrom_D hD
 
-/-- **Theorem 1.2 (Sharpness)**: For every `m ≥ 2`, there exists a standard degree-`m` planar
+/-- **Theorem 1.2 (Sharpness)**: For every `m ≥ 1`, there exists a standard degree-`m` planar
 polynomial system (`r ≡ 0`, `L_∞` invariant) with non-dicritical invariant curves attaining
-exactly `H_nodal(m)` algebraic limit cycles (and for `m = 1`, `H_nodal(1) = 0`). -/
-theorem theorem_1_2_standard_sharpness {m : ℕ} (hm : 2 ≤ m) :
+exactly `H_nodal(m)` algebraic limit cycles (`ẋ = x, ẏ = -y` for `m = 1`, Christopher [8] for `m ≥ 2`). -/
+theorem theorem_1_2_standard_sharpness {m : ℕ} (hm : 1 ≤ m) :
     ∃ (F : ProjectiveFoliation) (S_alg : ReducedCurve) (S : RealCurveDecomposition),
       F.deg = m ∧ F.isSaturated ∧ IsNonDicriticalInvariant F S_alg ∧
       RealDecompositionOf S_alg S ∧ S_alg.totalDeg = S.totalDeg ∧
