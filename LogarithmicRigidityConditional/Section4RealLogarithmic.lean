@@ -38,10 +38,10 @@ theorem prop_4_1_real_logarithmic_obstruction (S : RealCurveDecomposition)
     omega
   refine ⟨hne, ?_, ?_⟩
   · intro hfalse
-    simp only [RealCurveDecomposition.totalDeg, hfalse]
+    simp [RealCurveDecomposition.totalDeg, hfalse]
     omega
   · intro htrue
-    simp only [RealCurveDecomposition.totalDeg, htrue]
+    simp [RealCurveDecomposition.totalDeg, htrue]
     omega
 
 /-- **Theorem 1.2 (Upper Bound)**: Every standard real planar polynomial system (`r ≡ 0`) of
@@ -85,7 +85,7 @@ theorem theorem_1_2_standard_upper_bound {m : ℕ} (hm : 1 ≤ m)
             (0 < numLimitCycles) hthm11 (by omega)).2.2 hLinf
           exact hfrom_D (by omega)
       · have hD : S.realAffineDegs.sum ≤ m := by
-          simp only [RealCurveDecomposition.totalDeg, hLinf] at hdeg_bound hmax
+          simp [RealCurveDecomposition.totalDeg, hLinf] at hdeg_bound hmax
           omega
         exact hfrom_D hD
     · have hm'_lt : F.deg ≤ m - 1 := by omega
