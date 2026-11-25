@@ -12,7 +12,7 @@ Proves **unconditionally on top of Mathlib** (`HasDerivAt`, `Real.rpow`, `Finset
 that for any real logarithmic foliation with real residues `λ_i` and `C¹` factors `f_i`
 non-vanishing for `i ∈ s`, the local first integral
 `ũ(t) = f₁(t) * ∏_{i ∈ s} |f_i(t)|^{λ_i / λ₁}` has zero derivative everywhere
-(including on `{f₁ = 0}`) and is therefore constant along every `C¹` orbit.
+(including on `{f₁ = 0}`) and is constant along every `C¹` orbit.
 -/
 
 namespace LogarithmicRigidity
@@ -26,7 +26,8 @@ private lemma hasDerivAt_abs_rpow {g : ℝ → ℝ} {g' α t : ℝ}
       rw [abs_of_neg hs]
     have hpos' : 0 < -g t := neg_pos.mpr hneg
     have hder : HasDerivAt (fun s ↦ (-g s) ^ α) (α * (-g t) ^ (α - 1) * (-g')) t := by
-      simpa using (hg.neg.rpow_const (Or.inl (ne_of_gt hpos')))
+      convert (hg.neg.rpow_const (p := α) (Or.inl (ne_of_gt hpos'))) using 1
+      ring
     have hder' := hder.congr_of_eventuallyEq hev
     convert hder' using 1
     rw [abs_of_neg hneg]
@@ -35,12 +36,12 @@ private lemma hasDerivAt_abs_rpow {g : ℝ → ℝ} {g' α t : ℝ}
       ring_nf
     rw [hrpow]
     field_simp [hne]
-    ring
   · have hev : (fun s ↦ |g s| ^ α) =ᶠ[nhds t] (fun s ↦ (g s) ^ α) := by
       filter_upwards [hg.continuousAt.eventually (Ioi_mem_nhds hpos)] with s hs
       rw [abs_of_pos hs]
     have hder : HasDerivAt (fun s ↦ (g s) ^ α) (α * (g t) ^ (α - 1) * g') t := by
-      simpa using (hg.rpow_const (Or.inl (ne_of_gt hpos)))
+      convert (hg.rpow_const (p := α) (Or.inl (ne_of_gt hpos))) using 1
+      ring
     have hder' := hder.congr_of_eventuallyEq hev
     convert hder' using 1
     rw [abs_of_pos hpos]
@@ -69,11 +70,15 @@ theorem prop_4_1_local_first_integral_const {ι : Type*} [DecidableEq ι] (s : F
   let u : ℝ → ℝ := fun t ↦ f₁ t * (∏ i ∈ s, |f i t| ^ (lam i / lam₁))
   have hderiv_zero : ∀ t : ℝ, HasDerivAt u 0 t := by
     intro t
+    have hprod_raw := HasDerivAt.finset_prod (u := s)
+      (f := fun i x ↦ |f i x| ^ (lam i / lam₁))
+      (f' := fun i ↦ (lam i / lam₁) * |f i t| ^ (lam i / lam₁) * (f' i t / f i t))
+      (fun i hi ↦ hasDerivAt_abs_rpow (hf i hi t) (hne i hi t))
     have hprod :
         HasDerivAt (fun x ↦ ∏ i ∈ s, |f i x| ^ (lam i / lam₁))
           (∑ i ∈ s, (∏ j ∈ s.erase i, |f j t| ^ (lam j / lam₁)) *
             ((lam i / lam₁) * |f i t| ^ (lam i / lam₁) * (f' i t / f i t))) t := by
-      exact HasDerivAt.finset_prod fun i hi ↦ hasDerivAt_abs_rpow (hf i hi t) (hne i hi t)
+      simpa only [Finset.prod_apply, smul_eq_mul] using hprod_raw
     have hmul := (hf₁ t).mul hprod
     convert hmul using 1
     have hP_ne : (∏ j ∈ s, f j t) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun j hj ↦ hne j hj t
@@ -97,7 +102,7 @@ theorem prop_4_1_local_first_integral_const {ι : Type*} [DecidableEq ι] (s : F
             (f₁' t + f₁ t * ∑ i ∈ s, (lam i / lam₁) * (f' i t / f i t)) =
           lam₁ * (∏ j ∈ s, f j t) * f₁' t +
             ∑ i ∈ s, lam i * f₁ t * (∏ j ∈ s.erase i, f j t) * f' i t := by
-        rw [mul_add, ← mul_assoc, mul_assoc (lam₁ * ∏ j ∈ s, f j t), Finset.mul_sum]
+        rw [mul_add, ← mul_assoc (lam₁ * ∏ j ∈ s, f j t) (f₁ t), Finset.mul_sum]
         congr 1
         refine Finset.sum_congr rfl fun i hi ↦ ?_
         have hsplit : ∏ j ∈ s, f j t = f i t * ∏ j ∈ s.erase i, f j t := by

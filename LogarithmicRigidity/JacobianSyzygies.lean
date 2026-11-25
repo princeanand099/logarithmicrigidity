@@ -17,78 +17,47 @@ import ChallengeDefs
 
 namespace LogarithmicRigidity
 
+private lemma euler_monomial (m : Fin 3 →₀ ℕ) (c : ℂ) :
+    ∑ i : Fin 3, MvPolynomial.X i * MvPolynomial.pderiv i (MvPolynomial.monomial m c) =
+      ((∑ i : Fin 3, m i : ℕ) : MvPolynomial (Fin 3) ℂ) * MvPolynomial.monomial m c := by
+  have hterm : ∀ i : Fin 3,
+      MvPolynomial.X i * MvPolynomial.pderiv i (MvPolynomial.monomial m c) =
+        ((m i : ℕ) : MvPolynomial (Fin 3) ℂ) * MvPolynomial.monomial m c := by
+    intro i
+    rw [MvPolynomial.pderiv_monomial]
+    by_cases hi : m i = 0
+    · simp [hi]
+    · rw [MvPolynomial.X, MvPolynomial.monomial_mul, one_mul]
+      have hadd : Finsupp.single i 1 + (m - Finsupp.single i 1) = m := by
+        ext j
+        by_cases hj : j = i
+        · subst hj
+          simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]
+          omega
+        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
+      rw [hadd]
+      have hnat : ((m i : ℕ) : MvPolynomial (Fin 3) ℂ) = MvPolynomial.C ((m i : ℕ) : ℂ) := by
+        simp
+      rw [hnat, MvPolynomial.C_mul_monomial, mul_comm]
+  rw [Finset.sum_congr rfl fun i _ ↦ hterm i, ← Finset.sum_mul, Nat.cast_sum]
+
 /-- **Proposition 5.1 (Euler's Homogeneous Function Theorem)**:
 For any homogeneous `F : MvPolynomial (Fin 3) ℂ` of degree `d`,
 `∑ i : Fin 3, X i * pderiv i F = d * F`. -/
 theorem prop_5_1_euler_homogeneous (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
     (hF : F.IsHomogeneous d) :
     ∑ i : Fin 3, MvPolynomial.X i * MvPolynomial.pderiv i F = (d : MvPolynomial (Fin 3) ℂ) * F := by
-  ext m
-  simp only [map_sum, MvPolynomial.coeff_sum, MvPolynomial.coeff_X_mul,
-    MvPolynomial.coeff_pderiv, MvPolynomial.coeff_natCast_mul]
-  by_cases hm : m ∈ F.support
-  · have hdeg : ∑ i : Fin 3, m i = d := by
-      have := hF (MvPolynomial.mem_support_iff.mp hm)
-      simpa [Finsupp.degree, Finsupp.sum_fintype] using this
-    have hterm : ∀ i : Fin 3,
-        (if m i = 0 then 0 else MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) =
-        (m i : ℂ) * MvPolynomial.coeff m F := by
-      intro i
-      split_ifs with hi
-      · simp [hi]
-      · rw [MvPolynomial.coeff_pderiv]
-        have hadd : m - Finsupp.single i 1 + Finsupp.single i 1 = m := by
-          ext j
-          by_cases hj : j = i
-          · subst hj; simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-          · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
-        rw [hadd]
-        have hsub : (m - Finsupp.single i 1) i + 1 = m i := by
-          simp only [Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-        rw [hsub]
-    have hsum_eq :
-        ∑ i : Fin 3,
-          (if m i = 0 then (0 : ℂ) else
-            MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) =
-        ∑ i : Fin 3, (m i : ℂ) * MvPolynomial.coeff m F :=
-      Finset.sum_congr rfl fun i _ ↦ hterm i
-    have hsimp :
-        ∑ i : Fin 3, MvPolynomial.coeff m (MvPolynomial.X i * MvPolynomial.pderiv i F) =
-        ∑ i : Fin 3,
-          (if m i = 0 then (0 : ℂ) else
-            MvPolynomial.coeff (m - Finsupp.single i 1) (MvPolynomial.pderiv i F)) := by
-      refine Finset.sum_congr rfl fun i _ ↦ ?_
-      by_cases hi : m i = 0
-      · simp [MvPolynomial.coeff_X_mul, hi]
-      · have hle : Finsupp.single i 1 ≤ m := by
-          intro j
-          by_cases hj : j = i
-          · subst hj; simp; omega
-          · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
-        rw [MvPolynomial.coeff_X_mul_of_le hle]
-        simp [hi]
-    rw [hsimp, hsum_eq, ← Finset.sum_mul]
-    have hcast : (∑ i : Fin 3, (m i : ℂ)) = (d : ℂ) := by
-      rw [← Nat.cast_sum, hdeg]
-    rw [hcast]
-  · have hF0 : MvPolynomial.coeff m F = 0 := MvPolynomial.not_mem_support_iff.mp hm
-    rw [hF0, mul_zero]
-    apply Finset.sum_eq_zero
-    intro i _
-    by_cases hi : m i = 0
-    · simp [MvPolynomial.coeff_X_mul, hi]
-    · have hle : Finsupp.single i 1 ≤ m := by
-        intro j
-        by_cases hj : j = i
-        · subst hj; simp; omega
-        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
-      rw [MvPolynomial.coeff_X_mul_of_le hle, MvPolynomial.coeff_pderiv]
-      have hadd : m - Finsupp.single i 1 + Finsupp.single i 1 = m := by
-        ext j
-        by_cases hj : j = i
-        · subst hj; simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-        · simp [Finsupp.single_eq_of_ne (Ne.symm hj)]
-      rw [hadd, hF0, mul_zero]
+  conv_lhs => rw [F.as_sum]
+  conv_rhs => rw [F.as_sum]
+  simp only [map_sum, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun m hm ↦ ?_
+  rw [euler_monomial]
+  have hdeg : ∑ i : Fin 3, m i = d := by
+    have hmem : MvPolynomial.coeff m F ≠ 0 := MvPolynomial.mem_support_iff.mp hm
+    have hw := hF hmem
+    simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw
+  rw [hdeg]
 
 /-- **Lemma 5.2**: Geometry and rational parametrization of `C_m = {f_m = 0}` for all `m ≥ 2`. -/
 theorem lemma_5_2_curve_Cm_geometry {m : ℕ} (hm : 2 ≤ m) :

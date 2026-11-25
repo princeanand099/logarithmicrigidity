@@ -31,13 +31,14 @@ theorem sing_Linf_empty (X Y : ℂ) (hXY : X ≠ 0 ∨ Y ≠ 0) :
     have hY4 : Y ^ 4 = 0 := by
       have : (48 : ℂ) ≠ 0 := by norm_num
       exact (mul_eq_zero.mp hA).resolve_left this
-    exact pow_eq_zero hY4
+    by_contra hne
+    exact pow_ne_zero 4 hne hY4
   subst hY
   have hX : X ≠ 0 := hXY.resolve_right (by simp)
   have hX4 : -(320 : ℂ) * X ^ 4 = 0 := by
     linear_combination hC
   have h320 : -(320 : ℂ) ≠ 0 := by norm_num
-  exact hX (pow_eq_zero ((mul_eq_zero.mp hX4).resolve_left h320))
+  exact pow_ne_zero 4 hX ((mul_eq_zero.mp hX4).resolve_left h320)
 
 /-- **Lemma 6.1 (Hessian Determinants)**: Both singularities `(0, ±i)` are ordinary nodes
 with nonzero Hessian determinants `192 ∓ 32i`. -/
@@ -122,6 +123,7 @@ theorem floquet_integral_pos_oval1 (T : ℝ) (hT : 0 < T) (x y : ℝ → ℝ)
         ((hyt.pow 3).const_mul 111)).add
         ((hyt.pow 2).const_mul 2186)).add
         (hyt.const_mul 1537)) using 1
+    simp only [Pi.pow_apply]
     ring
   have hint_diff : IntervalIntegrable
       (fun t ↦ H1Scaled (x t) (y t) - 32000 * cofactorK (x t) (y t)) MeasureTheory.volume 0 T := by
@@ -141,8 +143,7 @@ theorem floquet_integral_pos_oval1 (T : ℝ) (hT : 0 < T) (x y : ℝ → ℝ)
   have heq : 32000 * ∫ t in (0 : ℝ)..T, cofactorK (x t) (y t) =
       ∫ t in (0 : ℝ)..T, H1Scaled (x t) (y t) := by
     have hsub := intervalIntegral.integral_sub hint_H1 hint_K
-    rw [hftc] at hsub
-    have hcm := intervalIntegral.integral_const_mul (32000 : ℝ) (fun t ↦ cofactorK (x t) (y t))
+    rw [hftc, intervalIntegral.integral_const_mul] at hsub
     linarith
   have hpos_H1 : 0 < ∫ t in (0 : ℝ)..T, H1Scaled (x t) (y t) := by
     apply intervalIntegral.integral_pos hT
@@ -183,6 +184,7 @@ theorem floquet_integral_pos_oval2 (T : ℝ) (hT : 0 < T) (x y : ℝ → ℝ)
         (hxt.const_mul 879)).sub
         ((hyt.pow 2).const_mul 510)).sub
         (hyt.const_mul 142)) using 1
+    simp only [Pi.pow_apply]
     ring
   have hint_diff : IntervalIntegrable
       (fun t ↦ H2Scaled (x t) (y t) - 3200 * cofactorK (x t) (y t)) MeasureTheory.volume 0 T := by
@@ -202,8 +204,7 @@ theorem floquet_integral_pos_oval2 (T : ℝ) (hT : 0 < T) (x y : ℝ → ℝ)
   have heq : 3200 * ∫ t in (0 : ℝ)..T, cofactorK (x t) (y t) =
       ∫ t in (0 : ℝ)..T, H2Scaled (x t) (y t) := by
     have hsub := intervalIntegral.integral_sub hint_H2 hint_K
-    rw [hftc] at hsub
-    have hcm := intervalIntegral.integral_const_mul (3200 : ℝ) (fun t ↦ cofactorK (x t) (y t))
+    rw [hftc, intervalIntegral.integral_const_mul] at hsub
     linarith
   have hpos_H2 : 0 < ∫ t in (0 : ℝ)..T, H2Scaled (x t) (y t) := by
     apply intervalIntegral.integral_pos hT
