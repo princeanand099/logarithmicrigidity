@@ -19,15 +19,22 @@ Formalizes the complete proofs of:
 
 namespace LogarithmicRigidityConditional
 
+/-- Auxiliary structural-recursion definition of the cumulative signed holomorphic factor order
+`ord(h_j) ∈ ℤ` along an embedded log-resolution `res` (Lemma 3.1). -/
+def cumulativeOrderAux {F : ProjectiveFoliation} {S : ReducedCurve}
+    (res : EmbeddedLogResolution F S) : ℕ → ℤ
+  | 0 => 0
+  | j + 1 =>
+      if hj : j < res.N then
+        cumulativeOrderAux res j +
+          (((res.steps ⟨j, hj⟩).nuF : ℤ) + 1 - ((res.steps ⟨j, hj⟩).nuC : ℤ))
+      else cumulativeOrderAux res j
+
 /-- Cumulative signed holomorphic factor order `ord(h_j) ∈ ℤ` along an embedded
 log-resolution `res` (Lemma 3.1). Using `ℤ` avoids saturating `ℕ` subtraction. -/
 def cumulativeOrder {F : ProjectiveFoliation} {S : ReducedCurve}
-    (res : EmbeddedLogResolution F S) : Fin (res.N + 1) → ℤ
-  | ⟨0, _⟩ => 0
-  | ⟨j + 1, hj⟩ =>
-      cumulativeOrder res ⟨j, Nat.lt_of_succ_lt hj⟩ +
-        (((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuF : ℤ) + 1 -
-          ((res.steps ⟨j, Nat.lt_of_succ_lt_succ hj⟩).nuC : ℤ))
+    (res : EmbeddedLogResolution F S) (j : Fin (res.N + 1)) : ℤ :=
+  cumulativeOrderAux res j.val
 
 /-- **Lemma 3.1**: Along every stage `j` of an embedded log-resolution `res` of a reduced
 non-dicritical invariant curve `S`, the blow-up multiplicity inequality
@@ -48,14 +55,14 @@ theorem lemma_3_1_blowup_propagation {F : ProjectiveFoliation} {S : ReducedCurve
       cumulativeOrder res ⟨j.val, by omega⟩ ≤ cumulativeOrder res ⟨j.val + 1, by omega⟩ := by
     intro ⟨k, hk⟩
     have hj : (res.steps ⟨k, hk⟩).nuC ≤ (res.steps ⟨k, hk⟩).nuF + 1 := hstep ⟨k, hk⟩
-    change cumulativeOrder res ⟨k, by omega⟩ ≤
-      cumulativeOrder res ⟨k, by omega⟩ +
-        (((res.steps ⟨k, hk⟩).nuF : ℤ) + 1 - ((res.steps ⟨k, hk⟩).nuC : ℤ))
+    simp only [cumulativeOrder, cumulativeOrderAux, hk, ↓reduceDIte]
     omega
   have hnonneg : ∀ j : Fin (res.N + 1), 0 ≤ cumulativeOrder res j := by
     intro ⟨k, hk⟩
     induction k with
-    | zero => exact le_rfl
+    | zero =>
+      simp only [cumulativeOrder, cumulativeOrderAux]
+      exact le_rfl
     | succ k ih =>
       have hk_prev : k < res.N + 1 := by omega
       have h0 := ih hk_prev
