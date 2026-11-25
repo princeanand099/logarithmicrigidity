@@ -15,7 +15,7 @@ Proves directly on top of Mathlib `v4.35.0` (`MvPolynomial (Fin 3) ℂ`):
 - `prop_5_1_koszul_pencil_forms`: Proposition 5.1(3) correspondence between the 3-dimensional
   Koszul subspace and the logarithmic pencil forms `ω_L = L dF - d F dL`.
 - `theorem_1_3_part1_koszul_rigidity`: Algebraic core of Theorem 1.3(1): whenever the Jacobian
-  partial derivatives `(F_X, F_Y, F_Z)` form a regular sequence in `ℂ[X, Y, Z]`, every
+  derivatives `(F_X, F_Y, F_Z)` form a regular sequence in `ℂ[X, Y, Z]`, every
   homogeneous degree-`(d - 1)` Jacobian syzygy is a `ℂ`-linear combination of the three Koszul
   syzygies, and its induced 1-form is `ω_L = L dF - d F dL`.
 - `lemma_5_2_Linf_smooth`, `lemma_5_3_Linf_disjoint`, `prop_5_4_param_factorization`:
@@ -209,7 +209,7 @@ theorem prop_5_1_koszul_pencil_forms (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)
   · linear_combination -MvPolynomial.C c₂ * heul
 
 /-- **Theorem 1.3(1) (Algebraic Koszul Rigidity)**: For any homogeneous `F ∈ ℂ[X, Y, Z]` of
-degree `d ≥ 2` whose Jacobian partial derivatives `(F_X, F_Y, F_Z)` form a regular sequence
+degree `d ≥ 2` whose Jacobian derivatives `(F_X, F_Y, F_Z)` form a regular sequence
 in `ℂ[X, Y, Z]`, every homogeneous degree-`(d - 1)` Jacobian syzygy `(P₁, P₂, P₃)` lies in
 the 3-dimensional Koszul subspace and induces a logarithmic pencil form `ω_L = L dF - d F dL`. -/
 theorem theorem_1_3_part1_koszul_rigidity (F : MvPolynomial (Fin 3) ℂ) (d : ℕ)

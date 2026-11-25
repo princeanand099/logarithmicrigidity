@@ -4,6 +4,7 @@ title: "Logarithmic Rigidity and Algebraic Limit Cycles of Non-Dicritical Foliat
 authors:
   - family-names: "Anand"
     given-names: "Prince"
-date-released: 2026-11-24
+date-released: 2026-11-25
+version: "1.0.0"
 license: Apache-2.0
 repository-code: "https://github.com/princeanand099/logarithmicrigidity"
