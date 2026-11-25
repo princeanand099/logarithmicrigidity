@@ -26,14 +26,14 @@ theorem induced_one_form_euler {R : Type*} [CommRing R] (ω : InducedOneForm R) 
 theorem lemma_2_1_tau_ratio_criterion (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ ≠ 0) (hμ₂ : μ₂ ≠ 0) :
     let ρ := μ₁ / μ₂
     let τ := tauRatio (μ₁ + μ₂) (μ₁ * μ₂)
-    (τ = ρ + ρ⁻¹ + 2) ∧
-    (τ.im = 0 ∧ 4 ≤ τ.re ↔ ρ.im = 0 ∧ 0 < ρ.re) ∧
+    τ = ρ + ρ⁻¹ + 2 ∧
+    (InRealRayFour τ ↔ ρ.im = 0 ∧ 0 < ρ.re) ∧
     (IsNonDicriticalTau τ → ∀ q : ℚ, 0 < q → ρ ≠ (q : ℂ)) := by
   sorry
 
-/-- **Lemma 2.4**: Monotonicity and superadditivity of the Harnack oval bound `h(d)`. -/
+/-- **Lemma 2.4**: Monotonicity and superadditivity of the Harnack oval bound `h`. -/
 theorem lemma_2_4_hBound_mono_superadd :
-    (∀ a b : ℕ, a ≤ b → hBound a ≤ hBound b) ∧
+    (∀ d : ℕ, hBound d ≤ hBound (d + 1)) ∧
     (∀ a b : ℕ, hBound a + hBound b ≤ hBound (a + b)) ∧
     (∀ l : List ℕ, (l.map hBound).sum ≤ hBound l.sum) := by
   sorry
@@ -162,7 +162,7 @@ theorem lemma_5_3_foliation_Fm_cofactor_origin {m : ℕ} (hm : 2 ≤ m) :
     (∀ lam x y : ℂ,
       PmVec m lam x y * fmDx m x y + QmVec m lam x y * fmDy m x y =
         KmCof m lam x y * fmPoly m x y) ∧
-    (∀ lam : ℝ, 0 < lam → lam < 2 * ((m + 1 : ℕ) : ℝ) →
+    (∀ (lam : ℝ), 0 < lam → lam < 2 * ((m + 1 : ℕ) : ℝ) →
       ∀ ζ : ℂ, ζ ^ m = 1 →
         (-(1 : ℂ) / (m : ℂ) + (lam : ℂ) * ζ / (2 * (m : ℂ) * ((m + 1 : ℕ) : ℂ))).re < 0) := by
   sorry
@@ -199,8 +199,8 @@ theorem lemma_6_1_quartic_geometry :
     (∀ X Y : ℝ, (X ≠ 0 ∨ Y ≠ 0) → 0 < quarticF4 X Y) ∧
     (∀ x y : ℂ, quarticF x y = 0 ∧ quarticFx x y = 0 ∧ quarticFy x y = 0 ↔
       x = 0 ∧ (y = Complex.I ∨ y = -Complex.I)) ∧
-    (∀ y : ℝ, 0 < quarticF 0 y) ∧
-    (quarticF (-1) 0 = -3 ∧ quarticF 1 0 = -3) ∧
+    (∀ y : ℝ, 0 < quarticF (0 : ℝ) y) ∧
+    quarticF (-(1 : ℝ) / 2) 0 = 0 ∧
     (∃ ystar : ℝ, 0 < ystar ∧ ystar < 1 ∧ quarticF 1 ystar = 0) := by
   sorry
 
@@ -242,8 +242,8 @@ theorem prop_6_2_counterexample_nondicritical :
     (∀ x y : ℂ, vecP x y * quarticFx x y + vecQ x y * quarticFy x y =
       cofactorK x y * quarticF x y) ∧
     (∀ x : ℝ, 0 < q4Poly x) ∧
-    (∀ t : ℝ, 0 < M4Poly t) ∧
-    (∀ t : ℝ, 4 ≤ t → 0 < M6Poly t) ∧
+    (∀ τ : ℝ, 0 < M4Poly τ) ∧
+    (∀ τ : ℝ, 4 ≤ τ → 0 < M6Poly τ) ∧
     IsNonDicriticalTau (tauRatio (jacTr 0 0) (jacDet 0 0)) ∧
     IsNonDicriticalTau (tauRatio (jacTr 0 Complex.I) (jacDet 0 Complex.I)) ∧
     IsNonDicriticalTau (tauRatio (jacTr 0 (-Complex.I)) (jacDet 0 (-Complex.I))) := by
