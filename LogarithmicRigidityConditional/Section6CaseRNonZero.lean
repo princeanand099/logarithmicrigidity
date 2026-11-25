@@ -90,13 +90,17 @@ theorem theorem_1_4_part1_r_nonzero_bounds {m : ℕ} (hm : 1 ≤ m)
             omega
           | 2 =>
             have hbound := hsing.1
-            simp only [aVal, rNonZeroBound] at hbound ⊢
+            have ha3 : aVal (2 + 1) = 0 := by decide
+            rw [ha3] at hbound
+            simp only [rNonZeroBound]
             omega
           | 3 =>
             have htau_ge2 : 2 ≤ tau := hdimca.2 rfl hnd
             by_cases hdelta2 : 2 ≤ delta
             · have hbound := hsing.1
-              simp only [aVal, rNonZeroBound] at hbound ⊢
+              have ha4 : aVal (3 + 1) = 1 := by decide
+              rw [ha4] at hbound
+              simp only [rNonZeroBound]
               omega
             · have hdelta1 : delta = 1 := by omega
               have hcusp : numLimitCycles ≤ 2 := hsing.2 rfl hdelta1 htau_ge2
