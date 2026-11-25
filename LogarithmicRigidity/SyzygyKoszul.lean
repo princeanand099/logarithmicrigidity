@@ -37,15 +37,16 @@ private lemma isHomogeneous_pderiv (F : MvPolynomial (Fin 3) ℂ) (d : ℕ) (hd 
     (MvPolynomial.pderiv i F).IsHomogeneous (d - 1) := by
   intro m hm
   rw [MvPolynomial.coeff_pderiv] at hm
-  have hne : F.coeff (m + Finsupp.single i 1) ≠ 0 := by
+  set m' : Fin 3 →₀ ℕ := m + Finsupp.single i 1
+  have hne : F.coeff m' ≠ 0 := by
     intro h0
     rw [h0, zero_mul] at hm
     exact hm rfl
-  have hdeg : ∑ j : Fin 3, (m + Finsupp.single i 1) j = d := by
+  have hdeg : ∑ j : Fin 3, m' j = d := by
     have hw := hF hne
     simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hw
-  have hsum : ∑ j : Fin 3, (m + Finsupp.single i 1) j = (∑ j : Fin 3, m j) + 1 := by
-    simp [Finsupp.add_apply, Finset.sum_add_distrib, Finsupp.single_apply]
+  have hsum : ∑ j : Fin 3, m' j = (∑ j : Fin 3, m j) + 1 := by
+    simp [m', Finsupp.add_apply, Finset.sum_add_distrib, Finsupp.single_apply]
   have hmdeg : ∑ j : Fin 3, m j = d - 1 := by omega
   simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using hmdeg
 
@@ -55,7 +56,7 @@ private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : �
   rw [MvPolynomial.coeff_mul]
   refine Finset.sum_eq_single (0, m) ?_ ?_
   · rintro ⟨p, q⟩ hpq hne
-    rw [Finset.mem_antidiagonal] at hpq
+    have hpq' : p + q = m := Finset.mem_antidiagonal.mp hpq
     by_cases hq : A.coeff q = 0
     · simp [hq]
     · exfalso
@@ -65,7 +66,7 @@ private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : �
       have hsum : ∑ j : Fin 3, p j + ∑ j : Fin 3, q j = k := by
         rw [← Finset.sum_add_distrib]
         have hadd : ∀ j : Fin 3, p j + q j = m j := fun j ↦ by
-          rw [← Finsupp.add_apply, hpq]
+          rw [← Finsupp.add_apply, hpq']
         simpa [hadd] using hm
       have hp0 : p = 0 := by
         ext j
@@ -74,11 +75,11 @@ private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : �
         simp only [Finsupp.coe_zero, Pi.zero_apply]
         omega
       subst hp0
-      rw [zero_add] at hpq
-      exact hne (Prod.ext rfl hpq)
+      rw [zero_add] at hpq'
+      exact hne (Prod.ext rfl hpq')
   · intro hnot
     exfalso
-    exact hnot (by simp [Finset.mem_antidiagonal])
+    exact hnot (Finset.mem_antidiagonal.mpr (zero_add m))
 
 private lemma eq_const_mul_add_const_mul_of_isHomogeneous
     (P A B u v : MvPolynomial (Fin 3) ℂ) (k : ℕ)
@@ -265,11 +266,12 @@ theorem theorem_1_3_part1_koszul_rigidity (F : MvPolynomial (Fin 3) ℂ) (d : �
   have h1' : P₁ = MvPolynomial.C (-(u.coeff 0)) * c - MvPolynomial.C (w.coeff 0) * b := by
     have hu : (-u).coeff 0 = -(u.coeff 0) := by simp
     have hw : (-w).coeff 0 = -(w.coeff 0) := by simp
-    rw [hu, hw, map_neg] at hP1_c
+    simp only [hu, hw, map_neg] at hP1_c
+    rw [map_neg]
     linear_combination hP1_c
   have h2' : P₂ = MvPolynomial.C (w.coeff 0) * a - MvPolynomial.C (v.coeff 0) * c := by
     have hv : (-v).coeff 0 = -(v.coeff 0) := by simp
-    rw [hv, map_neg] at hP2_c
+    simp only [hv, map_neg] at hP2_c
     linear_combination hP2_c
   have h3' : P₃ = MvPolynomial.C (v.coeff 0) * b - MvPolynomial.C (-(u.coeff 0)) * a := by
     rw [map_neg]
