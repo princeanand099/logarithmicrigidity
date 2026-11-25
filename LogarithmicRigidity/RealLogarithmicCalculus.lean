@@ -80,8 +80,7 @@ theorem prop_4_1_local_first_integral_const {ι : Type*} [DecidableEq ι] (s : F
           (∑ i ∈ s, (∏ j ∈ s.erase i, |f j t| ^ (lam j / lam₁)) *
             ((lam i / lam₁) * |f i t| ^ (lam i / lam₁) * (f' i t / f i t))) t := by
       convert hprod_raw using 1
-      · ext x; simp only [Finset.prod_apply]
-      · simp only [smul_eq_mul]
+      ext x; simp only [Finset.prod_apply]
     have hmul := (hf₁ t).mul hprod
     convert hmul using 1
     have hP_ne : (∏ j ∈ s, f j t) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun j hj ↦ hne j hj t
