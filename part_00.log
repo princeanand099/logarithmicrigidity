@@ -1,0 +1,104 @@
+COMMIT=b982ad1591d63a86792f204988ca09b42f0dbf28
+TIMESTAMP=2026-11-25T07:50:41Z
+=== 1. LAKE BUILD ===
+⚠ [9047/9070] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [9069/9070] Built Solution (4.1s)
+Build completed successfully (9070 jobs).
+LAKE_BUILD_EXIT=0
+=== 2. STATIC HYGIENE CHECK ===
+HYGIENE_CHECK_PASSED (0 forbidden constructs)
+=== 3. AXIOM AUDIT ===
+'LogarithmicRigidity.induced_one_form_euler' depends on axioms: [propext, Quot.sound]
+'LogarithmicRigidity.lemma_2_1_tau_ratio_criterion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_2_4_hBound_mono_superadd' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_4_1_local_first_integral_const' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_1_euler_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_1_euler_kernel_surj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_1_syzygy_correspondence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_1_koszul_pencil_forms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.theorem_1_3_part1_koszul_rigidity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_2_curve_Cm_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_2_Linf_smooth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_2_param_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_2_Fm_no_common_root_Linf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_3_foliation_Fm_cofactor_origin' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_3_Linf_disjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_3_Pm_Qm_coprime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_5_3_blowup_origin' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_4_param_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_4_div_and_asymp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.lemma_6_1_quartic_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.quartic_Linf_smooth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.quartic_real_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.quartic_real_smooth_and_sign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.quartic_hessian_nodes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.sing_Linf_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.counterexample_saturation_cert' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.sing_PQ_elim' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.sing_PQ_x_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_6_2_counterexample_nondicritical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_6_2_no_real_singularity_on_quartic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_6_2_q4_stratum_nondicritical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_6_2_q6_stratum_nondicritical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.prop_6_2_all_affine_singularities_nondicritical' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.floquet_integral_pos_oval1' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogarithmicRigidity.floquet_integral_pos_oval2' depends on axioms: [propext, Classical.choice, Quot.sound]
+=== 4. LAKE COMPARATOR ===
+Resolving dependencies
+Building Challenge
+⚠ [9047/9049] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9049] Built Challenge (5.4s)
+warning: comparator/Challenge.lean:21:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:26:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:35:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:45:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:62:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:69:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:76:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:104:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:125:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:153:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:160:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:167:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:174:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:181:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:191:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:198:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:205:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:225:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:236:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:258:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:264:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:274:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:282:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:286:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:294:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:305:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:312:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:319:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:325:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:332:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:345:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:351:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:358:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:366:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:373:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:383:8: declaration uses `sorry`
+warning: comparator/Challenge.lean:396:8: declaration uses `sorry`
+Build completed successfully (9049 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, LogarithmicRigidity.induced_one_form_euler, LogarithmicRigidity.lemma_2_1_tau_ratio_criterion, LogarithmicRigidity.lemma_2_4_hBound_mono_superadd, LogarithmicRigidity.prop_4_1_local_first_integral_const, LogarithmicRigidity.prop_5_1_euler_homogeneous, LogarithmicRigidity.prop_5_1_euler_kernel_surj, LogarithmicRigidity.prop_5_1_syzygy_correspondence, LogarithmicRigidity.prop_5_1_koszul_pencil_forms, LogarithmicRigidity.theorem_1_3_part1_koszul_rigidity, LogarithmicRigidity.lemma_5_2_curve_Cm_geometry, LogarithmicRigidity.lemma_5_2_Linf_smooth, LogarithmicRigidity.lemma_5_2_param_surjective, LogarithmicRigidity.lemma_5_2_Fm_no_common_root_Linf, LogarithmicRigidity.lemma_5_3_foliation_Fm_cofactor_origin, LogarithmicRigidity.lemma_5_3_Linf_disjoint, LogarithmicRigidity.lemma_5_3_Pm_Qm_coprime, LogarithmicRigidity.lemma_5_3_blowup_origin, LogarithmicRigidity.prop_5_4_param_factorization, LogarithmicRigidity.prop_5_4_div_and_asymp, LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2, LogarithmicRigidity.lemma_6_1_quartic_geometry, LogarithmicRigidity.quartic_Linf_smooth, LogarithmicRigidity.quartic_real_compact, LogarithmicRigidity.quartic_real_smooth_and_sign, LogarithmicRigidity.quartic_hessian_nodes, LogarithmicRigidity.sing_Linf_empty, LogarithmicRigidity.counterexample_saturation_cert, LogarithmicRigidity.sing_PQ_elim, LogarithmicRigidity.sing_PQ_x_zero, LogarithmicRigidity.prop_6_2_counterexample_nondicritical, LogarithmicRigidity.prop_6_2_no_real_singularity_on_quartic, LogarithmicRigidity.prop_6_2_q4_stratum_nondicritical, LogarithmicRigidity.prop_6_2_q6_stratum_nondicritical, LogarithmicRigidity.prop_6_2_all_affine_singularities_nondicritical, LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2, LogarithmicRigidity.floquet_integral_pos_oval1, LogarithmicRigidity.floquet_integral_pos_oval2, propext, Classical.choice, Quot.sound, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Challenge
+Building Solution
+⚠ [9047/9069] Replayed ChallengeDefs
+warning: comparator/ChallengeDefs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (9069 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, LogarithmicRigidity.induced_one_form_euler, LogarithmicRigidity.lemma_2_1_tau_ratio_criterion, LogarithmicRigidity.lemma_2_4_hBound_mono_superadd, LogarithmicRigidity.prop_4_1_local_first_integral_const, LogarithmicRigidity.prop_5_1_euler_homogeneous, LogarithmicRigidity.prop_5_1_euler_kernel_surj, LogarithmicRigidity.prop_5_1_syzygy_correspondence, LogarithmicRigidity.prop_5_1_koszul_pencil_forms, LogarithmicRigidity.theorem_1_3_part1_koszul_rigidity, LogarithmicRigidity.lemma_5_2_curve_Cm_geometry, LogarithmicRigidity.lemma_5_2_Linf_smooth, LogarithmicRigidity.lemma_5_2_param_surjective, LogarithmicRigidity.lemma_5_2_Fm_no_common_root_Linf, LogarithmicRigidity.lemma_5_3_foliation_Fm_cofactor_origin, LogarithmicRigidity.lemma_5_3_Linf_disjoint, LogarithmicRigidity.lemma_5_3_Pm_Qm_coprime, LogarithmicRigidity.lemma_5_3_blowup_origin, LogarithmicRigidity.prop_5_4_param_factorization, LogarithmicRigidity.prop_5_4_div_and_asymp, LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2, LogarithmicRigidity.lemma_6_1_quartic_geometry, LogarithmicRigidity.quartic_Linf_smooth, LogarithmicRigidity.quartic_real_compact, LogarithmicRigidity.quartic_real_smooth_and_sign, LogarithmicRigidity.quartic_hessian_nodes, LogarithmicRigidity.sing_Linf_empty, LogarithmicRigidity.counterexample_saturation_cert, LogarithmicRigidity.sing_PQ_elim, LogarithmicRigidity.sing_PQ_x_zero, LogarithmicRigidity.prop_6_2_counterexample_nondicritical, LogarithmicRigidity.prop_6_2_no_real_singularity_on_quartic, LogarithmicRigidity.prop_6_2_q4_stratum_nondicritical, LogarithmicRigidity.prop_6_2_q6_stratum_nondicritical, LogarithmicRigidity.prop_6_2_all_affine_singularities_nondicritical, LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2, LogarithmicRigidity.floquet_integral_pos_oval1, LogarithmicRigidity.floquet_integral_pos_oval2, propext, Classical.choice, Quot.sound, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+LAKE_COMPARATOR_EXIT=0
