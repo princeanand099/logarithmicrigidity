@@ -8,7 +8,7 @@ import ChallengeDefs
 /-!
 # Section 2: Preliminaries, Projective 1-Forms, Lemma 2.1, and Lemma 2.4
 
-Package 1 module covering:
+Covers:
 - Induced homogeneous 1-form Euler identity (Eq. 2.1)
 - Algebraic non-dicriticality criterion (Lemma 2.1)
 - Monotonicity and superadditivity of the Harnack oval bound `h` (Lemma 2.4)
@@ -73,7 +73,7 @@ theorem lemma_2_1_tau_ratio_criterion (μ₁ μ₂ : ℂ) (hμ₁ : μ₁ ≠ 0)
           ρ.re * (ρ.re * ρ.re) + ρ.re + 2 * (ρ.re * ρ.re) - 4 * (ρ.re * ρ.re) := by ring
       have hfact : 0 ≤ ρ.re * ((ρ.re - 1) * (ρ.re - 1)) := by linarith
       by_contra hle
-      push_neg at hle
+      push Not at hle
       have hne0 : ρ.re ≠ 0 := by
         intro h0
         rw [h0] at hns_re

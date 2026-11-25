@@ -8,8 +8,9 @@ import Mathlib
 /-!
 # Public Definitions for Logarithmic Rigidity and Algebraic Limit Cycles
 
-This module contains ONLY genuine mathematical definitions built directly on Lean 4 core
-and Mathlib `v4.35.0` (zero custom axioms, zero hypothesis-bundle shortcuts).
+This module contains public definitions and explicit polynomial families built directly
+on Lean 4 core and Mathlib `v4.35.0` for Prince Anand (November 2026),
+*Logarithmic Rigidity and Algebraic Limit Cycles of Non-Dicritical Foliations*.
 -/
 
 namespace LogarithmicRigidity
@@ -72,6 +73,26 @@ def InducedOneForm.C {R : Type*} [CommRing R] (ω : InducedOneForm R) : R :=
   ω.Y * ω.Ph - ω.X * ω.Qh
 
 /-! ## Section 5: Jacobian Syzygies and Degree-`(m + 1)` Irreducible Curves -/
+
+/-- A triple `(P₁, P₂, P₃)` in `ℂ[X, Y, Z]` is a Jacobian syzygy of `F` if
+`P₁ F_X + P₂ F_Y + P₃ F_Z = 0` (Proposition 5.1). -/
+def IsJacobianSyzygy (F P₁ P₂ P₃ : MvPolynomial (Fin 3) ℂ) : Prop :=
+  P₁ * MvPolynomial.pderiv 0 F + P₂ * MvPolynomial.pderiv 1 F + P₃ * MvPolynomial.pderiv 2 F = 0
+
+/-- Homogeneous 1-form `ω = i_V i_E Ω` associated to a triple `V = (P₁, P₂, P₃)` in `ℂ[X, Y, Z]`,
+with components `(P₂ Z - P₃ Y, P₃ X - P₁ Z, P₁ Y - P₂ X)` (Proposition 5.1(1)). -/
+noncomputable def formOfSyzygy (P₁ P₂ P₃ : MvPolynomial (Fin 3) ℂ) :
+    MvPolynomial (Fin 3) ℂ × MvPolynomial (Fin 3) ℂ × MvPolynomial (Fin 3) ℂ :=
+  (P₂ * MvPolynomial.X 2 - P₃ * MvPolynomial.X 1,
+   P₃ * MvPolynomial.X 0 - P₁ * MvPolynomial.X 2,
+   P₁ * MvPolynomial.X 1 - P₂ * MvPolynomial.X 0)
+
+/-- A triple `(a, b, c)` in a commutative ring `R` is a regular sequence of length 3 if
+`a` is regular in `R`, `b` is regular modulo `(a)`, and `c` is regular modulo `(a, b)`. -/
+def IsRegularSeq3 {R : Type*} [CommRing R] (a b c : R) : Prop :=
+  (∀ x : R, x * a = 0 → x = 0) ∧
+  (∀ x y : R, x * b = y * a → ∃ w : R, x = w * a) ∧
+  (∀ x y z : R, x * c = y * a + z * b → ∃ u v : R, x = u * a + v * b)
 
 /-- Section 5 curve `f_m(x, y) = x^m - y^m + x^{m+1} + 2 y^{m+1}` (Equation (5.2)). -/
 def fmPoly (m : ℕ) (x y : ℂ) : ℂ :=

@@ -6,7 +6,7 @@ Authors: Prince Anand
 import LogarithmicRigidity
 
 /-!
-# Axiom Audit for All Exported Unconditional Theorems
+# Axiom Audit for All Exported Theorems
 
 Every output must be strictly a subset of `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -16,8 +16,14 @@ Every output must be strictly a subset of `[propext, Classical.choice, Quot.soun
 #print axioms LogarithmicRigidity.lemma_2_4_hBound_mono_superadd
 #print axioms LogarithmicRigidity.prop_4_1_local_first_integral_const
 #print axioms LogarithmicRigidity.prop_5_1_euler_homogeneous
+#print axioms LogarithmicRigidity.prop_5_1_syzygy_correspondence
+#print axioms LogarithmicRigidity.prop_5_1_koszul_pencil_forms
+#print axioms LogarithmicRigidity.theorem_1_3_part1_koszul_rigidity
 #print axioms LogarithmicRigidity.lemma_5_2_curve_Cm_geometry
+#print axioms LogarithmicRigidity.lemma_5_2_Linf_smooth
 #print axioms LogarithmicRigidity.lemma_5_3_foliation_Fm_cofactor_origin
+#print axioms LogarithmicRigidity.lemma_5_3_Linf_disjoint
+#print axioms LogarithmicRigidity.prop_5_4_param_factorization
 #print axioms LogarithmicRigidity.prop_5_4_and_theorem_1_3_part2
 #print axioms LogarithmicRigidity.lemma_6_1_quartic_geometry
 #print axioms LogarithmicRigidity.quartic_hessian_nodes
