@@ -31,6 +31,7 @@ Every output must be strictly a subset of `[propext, Classical.choice, Quot.soun
 #print axioms LogarithmicRigidity.sing_PQ_elim
 #print axioms LogarithmicRigidity.sing_PQ_x_zero
 #print axioms LogarithmicRigidity.prop_6_2_counterexample_nondicritical
+#print axioms LogarithmicRigidity.prop_6_2_no_real_singularity_on_quartic
 #print axioms LogarithmicRigidity.prop_6_3_and_theorem_1_4_part2
 #print axioms LogarithmicRigidity.floquet_integral_pos_oval1
 #print axioms LogarithmicRigidity.floquet_integral_pos_oval2

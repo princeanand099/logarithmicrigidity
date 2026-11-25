@@ -25,6 +25,7 @@ All declarations listed in the table below are proved on top of Mathlib `v4.35.0
 | Prop. 6.2 (elimination) | §6 | `LogarithmicRigidity/Section6ElimCert.lean` | `sing_PQ_elim` | Proved |
 | Prop. 6.2 (`x = 0` stratum) | §6 | `LogarithmicRigidity/Section6ElimCert.lean` | `sing_PQ_x_zero` | Proved |
 | Prop. 6.2 (cofactor & positivity) | §6, App. A | `LogarithmicRigidity/CounterexampleCert.lean` | `prop_6_2_counterexample_nondicritical` | Proved |
+| Prop. 6.2 (no real singularities on `f = 0`) | §6, App. A | `LogarithmicRigidity/Section6RealSingFree.lean` | `prop_6_2_no_real_singularity_on_quartic` | Proved |
 | Prop. 6.3 & Thm. 1.4(2) (SOS) | §1, §6, App. A | `LogarithmicRigidity/CounterexampleCert.lean` | `prop_6_3_and_theorem_1_4_part2` | Proved |
 | Prop. 6.3 (FTC Floquet integrals) | §6 | `LogarithmicRigidity/Section6ElimCert.lean` | `floquet_integral_pos_oval1`, `floquet_integral_pos_oval2` | Proved |
 

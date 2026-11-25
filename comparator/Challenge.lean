@@ -249,6 +249,12 @@ theorem prop_6_2_counterexample_nondicritical :
     IsNonDicriticalTau (tauRatio (jacTr 0 (-Complex.I)) (jacDet 0 (-Complex.I))) := by
   sorry
 
+/-- **Proposition 6.2 (No Real Singularities on the Quartic)**: Neither real oval of the
+2-nodal quartic `f(x, y) = 0` (6.1) contains any singularity of `(P, Q)` (6.2). -/
+theorem prop_6_2_no_real_singularity_on_quartic (x y : ℝ)
+    (hf : quarticF x y = 0) : ¬ (vecP x y = 0 ∧ vecQ x y = 0) := by
+  sorry
+
 /-- **Proposition 6.3 & Theorem 1.4(2) (Positivstellensatz Core)**: Strict positivity of
 `H₁` on `{f = 0, x < 0}` and `H₂` on `{f = 0, x > 0}`, and `H_nodal(3) < 2`. -/
 theorem prop_6_3_and_theorem_1_4_part2 :

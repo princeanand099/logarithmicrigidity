@@ -10,6 +10,7 @@ import LogarithmicRigidity.SyzygyKoszul
 import LogarithmicRigidity.CaseRNonZero
 import LogarithmicRigidity.CounterexampleCert
 import LogarithmicRigidity.Section6ElimCert
+import LogarithmicRigidity.Section6RealSingFree
 import LogarithmicRigidity.SanityChecks
 
 /-!

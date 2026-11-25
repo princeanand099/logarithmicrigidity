@@ -20,7 +20,7 @@ Every theorem exported by `LogarithmicRigidity` and locked in `comparator/Challe
 - **Section 6 & Appendix A**:
   - Arithmetic inequalities for Theorem 1.4(1) (`hBound_le_rNonZeroBound`, `hBound_add_le_rNonZeroBound`).
   - Lemma 6.1 quartic geometry, Nullstellensatz singular locus `{(0, ±i)}`, compactness, separation along `x = 0`, IVT witness, and Hessian determinants `192 ∓ 32i ≠ 0` (`lemma_6_1_quartic_geometry`, `quartic_hessian_nodes`).
-  - Proposition 6.2 `Sing(ℱ) ∩ L_∞ = ∅` (`sing_Linf_empty`), elimination `x * q₄(x) * q₆(x) ∈ ⟨P, Q⟩` (`sing_PQ_elim`), `x = 0` stratum (`sing_PQ_x_zero`), cofactor identity, and positivity certificates for `q₄`, `M₄`, `M₆` (`prop_6_2_counterexample_nondicritical`).
+  - Proposition 6.2 `Sing(ℱ) ∩ L_∞ = ∅` (`sing_Linf_empty`), elimination `x * q₄(x) * q₆(x) ∈ ⟨P, Q⟩` (`sing_PQ_elim`), `x = 0` stratum (`sing_PQ_x_zero`), cofactor identity, positivity certificates for `q₄`, `M₄`, `M₆` (`prop_6_2_counterexample_nondicritical`), and end-to-end real singularity-free certification on `f(x, y) = 0` (`prop_6_2_no_real_singularity_on_quartic`).
   - Proposition 6.3 & Theorem 1.4(2) SOS Positivstellensatz positivity of `H₁` and `H₂` (`prop_6_3_and_theorem_1_4_part2`) and Fundamental Theorem of Calculus proofs that `∫_0^T K(γ(t)) dt > 0` and `exp(∫_0^T K(γ(t)) dt) > 1` on both ovals (`floquet_integral_pos_oval1`, `floquet_integral_pos_oval2`).
 
 ### Not Proved (Missing Mathlib `v4.35.0` Foundations)
