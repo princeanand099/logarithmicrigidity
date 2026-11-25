@@ -87,8 +87,7 @@ theorem theorem_1_1_logarithmic_rigidity (F : ProjectiveFoliation) (S : ReducedC
   rcases hk_cases with hk0 | hk1 | hk2
   · have htot0 : S.totalDeg = 0 := by
       unfold ReducedCurve.totalDeg
-      haveI : IsEmpty (Fin S.k) := by rw [hk0]; infer_instance
-      exact Finset.sum_empty
+      exact Finset.sum_eq_zero fun i _ ↦ (Nat.not_lt_zero i.val (hk0 ▸ i.isLt)).elim
     omega
   · let i0 : Fin S.k := ⟨0, by omega⟩
     have hsum1 : poincareResidue res i0 * (S.degF i0 : ℂ) = 0 := by
