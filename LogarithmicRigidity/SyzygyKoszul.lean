@@ -56,7 +56,7 @@ private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : �
   rw [MvPolynomial.coeff_mul]
   refine Finset.sum_eq_single (0, m) ?_ ?_
   · rintro ⟨p, q⟩ hpq hne
-    have hpq' : p + q = m := Finset.mem_antidiagonal.mp hpq
+    have hpq' : p + q = m := by simpa using hpq
     by_cases hq : A.coeff q = 0
     · simp [hq]
     · exfalso
@@ -79,7 +79,7 @@ private lemma coeff_mul_of_isHomogeneous (u A : MvPolynomial (Fin 3) ℂ) (k : �
       exact hne (Prod.ext rfl hpq')
   · intro hnot
     exfalso
-    exact hnot (Finset.mem_antidiagonal.mpr (zero_add m))
+    exact hnot (by simp)
 
 private lemma eq_const_mul_add_const_mul_of_isHomogeneous
     (P A B u v : MvPolynomial (Fin 3) ℂ) (k : ℕ)
